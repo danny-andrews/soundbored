@@ -1,0 +1,26 @@
+{
+  "name": "react-project-with-webpack",
+  "main": "index.js",
+  "devDependencies": {
+    "babel-core": "^5.8.34",
+    "babel-loader": "^5.3.3",
+    "extract-text-webpack-plugin": "^0.9.1",
+    "grunt": "^0.4.5",
+    "grunt-jscs": "^2.3.0",
+    "grunt-open": "^0.2.3",
+    "grunt-shell": "^1.1.2",
+    "grunt-webpack": "^1.0.11",
+    "jshint": "^2.9.1-rc1",
+    "jsx-template-loader": "^0.0.3",
+    "load-grunt-tasks": "^3.3.0",
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0"
+  },
+  "dependencies": {
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-redux": "^4.0.0",
+    "redux": "^3.0.4",
+    "redux-thunk": "^1.0.0"
+  }
+}
