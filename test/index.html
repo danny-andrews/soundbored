@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Example</title>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../dist/vendor.js"></script>
+  <script type="text/javascript">
+    mocha.setup('bdd');
+    // Run tests once the page has loaded
+    $(document).ready(function() {
+      mocha.run();
+    });
+  </script>
+  <script src="../dist/app.js"></script>
+</head>
+<body>
+  <div id="mocha"></div>
+</body>
+</html>

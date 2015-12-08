@@ -1,5 +1,5 @@
-export const PLAY_SOUND = 'PLAY_SOUND';
+import * as types from '../constants/action-types';
 
 export function playSound(id) {
-  return {type: PLAY_SOUND, id};
+  return {type: types.PLAY_SOUND, id};
 }

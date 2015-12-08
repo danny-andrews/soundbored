@@ -30,6 +30,7 @@
   "browser": true,
   "node": true,
   "devel": true,
+  "mocha": true,
   // Warning about regualar arguments coming after default ones. (This is a
   //   common pattern in reducers, so that's why I'm silencing.)
   "-W138": false

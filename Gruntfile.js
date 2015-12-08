@@ -18,8 +18,14 @@ module.exports = function(grunt) {
       port: '<%= port %>'
     }),
 
-    shell: {
-      jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')}
+    mocha: {
+      test: {
+        options: {reporter: 'Spec'},
+        src: ['test/index.html'],
+      },
+    },
+    open: {
+      demo: {path: '<%= url %>/index.html'}
     },
     jscs: {src: JS_GLOB},
     'webpack-dev-server': {
@@ -31,8 +37,8 @@ module.exports = function(grunt) {
         port: '<%= port %>'
       }
     },
-    open: {
-      demo: {path: '<%= url %>/index.html'}
+    shell: {
+      jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')}
     }
   });
 
