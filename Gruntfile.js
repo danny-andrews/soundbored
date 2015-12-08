@@ -2,7 +2,9 @@
 /* jscs:disable requireTemplateStrings */
 var url = require('url');
 var config = require('./webpack.config.js');
-const LINT_DIRS = ['components', 'containers', 'store', 'actions', 'reducers'];
+var glob = require('glob');
+const JS_GLOB = './{,!(node_modules|dist)/**/}*.js';
+const JS_FILES = glob.sync(JS_GLOB);
 
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
@@ -17,9 +19,9 @@ module.exports = function(grunt) {
     }),
 
     shell: {
-      jshint: {command: 'node_modules/.bin/jshint *.js ' + LINT_DIRS.join(' ')}
+      jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')}
     },
-    jscs: {src: ['*.js'].concat(LINT_DIRS)},
+    jscs: {src: JS_GLOB},
     'webpack-dev-server': {
       all: {
         webpack: config,
