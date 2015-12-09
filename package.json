@@ -5,6 +5,7 @@
     "babel-core": "^5.8.34",
     "babel-loader": "^5.3.3",
     "chai": "^3.4.1",
+    "expect": "^1.13.0",
     "extract-text-webpack-plugin": "^0.9.1",
     "glob": "^6.0.1",
     "grunt": "^0.4.5",
@@ -18,10 +19,12 @@
     "jsx-template-loader": "^0.0.3",
     "load-grunt-tasks": "^3.3.0",
     "mocha": "^2.3.4",
+    "react-addons-test-utils": "^0.14.3",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
   },
   "dependencies": {
+    "object-assign": "^4.0.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",

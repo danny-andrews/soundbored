@@ -18,12 +18,6 @@ module.exports = function(grunt) {
       port: '<%= port %>'
     }),
 
-    mocha: {
-      test: {
-        options: {reporter: 'Spec'},
-        src: ['test/index.html'],
-      },
-    },
     open: {
       demo: {path: '<%= url %>/index.html'}
     },
@@ -38,11 +32,16 @@ module.exports = function(grunt) {
       }
     },
     shell: {
-      jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')}
+      jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')},
+      mocha: {
+        command: 'mocha --recursive --compilers js:babel-core/register' +
+          ' --require ./test/setup.js'
+      }
     }
   });
 
   grunt.registerTask('lint', 'Lint code.', ['shell:jshint', 'jscs']);
+  grunt.registerTask('test', 'Run tests.', ['lint', 'shell:mocha']);
   grunt.registerTask('serve', 'Serve app.', ['open', 'webpack-dev-server']);
 
   grunt.registerTask('default', 'serve');
