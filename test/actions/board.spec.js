@@ -1,6 +1,7 @@
 import expect from 'expect';
-import * as actions from '../../actions/board';
-import * as types from '../../constants/action-types';
+
+import * as actions from 'app/actions/board';
+import * as types from 'app/constants/action-types';
 
 describe('board actions', () => {
   it('#playSound', () => {

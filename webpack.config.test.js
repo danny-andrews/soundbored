@@ -1,12 +1,19 @@
 /* jshint varstmt: false */
-var baseWebpack = require('./webpack.config.js');
-var objectAssign = require('object-assign');
 var glob = require('glob');
+var cloneDeep = require('lodash/clone');
+var path = require('path');
 
-var testConfig = objectAssign(baseWebpack, {
-  entry: glob.sync('test/*/*spec.js'),
-  output: {filename: 'dist/tests.js'},
-  plugins: []
-});
+var baseWebpack = require('./webpack.config.js');
+
+var testConfig = cloneDeep(baseWebpack);
+testConfig.entry = {
+  tests: glob.sync('test/*/*spec.js'),
+  vendor: testConfig.entry.vendor.concat('mocha/mocha.js')
+};
+testConfig.output = {
+  filename: '[name].js',
+  path: path.resolve('test', 'dist')
+};
+testConfig.module.noParse = /mocha\.js/;
 
 module.exports = testConfig;

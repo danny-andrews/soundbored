@@ -1,9 +1,9 @@
-import { PLAY_SOUND } from '../actions/board';
+import { PLAY_SOUND } from '../constants/action-types';
 
-export default function board(state = 0, action) {
+export default function board(state = {}, action) {
   switch(action.type) {
     case PLAY_SOUND:
-      return state;
+      return Object.assign({}, state);
     default:
       return state;
   }

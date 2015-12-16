@@ -1,25 +1,21 @@
 import expect from 'expect';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import Board from '../../components/board/board';
 
-describe('board actions', () => {
-  beforeEach(function(propOverrides = {}) {
-    const props = {playSound: () => {}});
+import Board from 'app/components/board/board';
 
-    const renderer = TestUtils.createRenderer();
-    React.createElement(Board, props);
-    const output = renderer.getRenderOutput();
+describe('components', function() {
+  describe('Board', () => {
+    beforeEach(function() {
+      const props = {playSound: () => {}};
+      const renderer = TestUtils.createRenderer();
+      renderer.render(React.createElement(Board, props));
+      this.el = renderer.getRenderOutput();
+    });
 
-    this.el = {
-      props: props,
-      output: output
-    };
-  });
-
-  describe('things', function() {
-    it('do stuff', function() {
-      expect(true).toBe(true);
+    it('renders properly', function() {
+      expect(this.el.type).toBe('button');
+      expect(this.el.props.children).toBe('Play');
     });
   });
 });

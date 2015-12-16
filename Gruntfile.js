@@ -1,10 +1,15 @@
 /* jshint varstmt: false */
 /* jscs:disable requireTemplateStrings */
+var path = require('path');
 var url = require('url');
-var config = require('./webpack.config.js');
-var glob = require('glob');
-const JS_GLOB = './{,!(node_modules|dist)/**/}*.js';
-const JS_FILES = glob.sync(JS_GLOB);
+
+var webpackConfig = require('./webpack.config.js');
+var testWebpackConfig = require('./webpack.config.test.js');
+
+const JS_GLOBS = [
+  './*.js',
+  './!(node_modules|dist)/!(dist){/**/,}*.js'
+];
 
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
@@ -17,32 +22,56 @@ module.exports = function(grunt) {
       hostname: '<%= hostname %>',
       port: '<%= port %>'
     }),
+    webpackPath: path.join('webpack-dev-server', 'index.html'),
 
     open: {
-      demo: {path: '<%= url %>/index.html'}
+      webpack: {path: '<%= url %>/<%= webpackPath %>'}
     },
-    jscs: {src: JS_GLOB},
+    jscs: {all: JS_GLOBS},
+    jshint: {
+      options: {jshintrc: true},
+      all: JS_GLOBS
+    },
     'webpack-dev-server': {
-      all: {
-        webpack: config,
+      options: {
         keepAlive: true,
         inline: true,
         host: '<%= hostname %>',
         port: '<%= port %>'
-      }
+      },
+      demo: {webpack: webpackConfig},
+      test: {webpack: testWebpackConfig, contentBase: 'test'}
+    },
+    webpack: {
+      dist: webpackConfig,
+      test: testWebpackConfig
     },
     shell: {
-      jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')},
       mocha: {
-        command: 'mocha --recursive --compilers js:babel-core/register' +
-          ' --require ./test/setup.js'
+        command: path.join(
+          'node_modules/.bin/mocha-phantomjs <%= url %>',
+          'index.html'
+        )
       }
     }
   });
 
-  grunt.registerTask('lint', 'Lint code.', ['shell:jshint', 'jscs']);
-  grunt.registerTask('test', 'Run tests.', ['lint', 'shell:mocha']);
-  grunt.registerTask('serve', 'Serve app.', ['open', 'webpack-dev-server']);
+  grunt.registerTask('lint', 'Lint code.', ['jshint', 'jscs']);
+  grunt.registerTask('test', 'Run tests.', [
+    'lint',
+    'shell:mocha'
+  ]);
+  grunt.registerTask('serve', 'Serve code.', function(env) {
+    grunt.task.run('compile:' + env, 'webpack-dev-server:' + env);
+  });
+  grunt.registerTask(
+    'demo',
+    'Run the demo page in your browser.',
+    ['open:webpack:demo', 'webpack-dev-server:demo']
+  );
+  grunt.registerTask('compile', 'Compile code.', function(env) {
+    grunt.task.run('webpack:' + env);
+  });
 
   grunt.registerTask('default', 'serve');
 };

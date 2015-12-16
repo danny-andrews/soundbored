@@ -21,10 +21,6 @@
   "maxdepth": 4,
   "maxcomplexity": 10,
 
-  // Exceptions
-  "expr": true, // For chai (bdd)
-  "nonew": false, // For SWPurchasing side effects
-
   // Environment
   "esversion": 6,
   "browser": true,

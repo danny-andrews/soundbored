@@ -39,8 +39,7 @@
     "for",
     "while",
     "do",
-    "switch",
-    "try"
+    "switch"
   ],
   "requireSpaceBeforeObjectValues": true,
   "disallowSpaceAfterObjectKeys": true,
@@ -58,8 +57,9 @@
   "disallowTabs": true,
   "requireLineFeedAtFileEnd": true,
   // Naming
-  "disallowDanglingUnderscores": true,
-  "requireCamelCaseOrUpperCaseIdentifiers": true,
+  "requireCamelCaseOrUpperCaseIdentifiers": {
+    "ignoreProperties": true
+  },
   // Object Literals
   "requireObjectKeysOnNewLine": true,
   "requireObjectKeysOnNewLine": {
@@ -67,13 +67,16 @@
   },
   "disallowQuotedKeysInObjects": true,
   "requireDotNotation": true,
+  "disallowTrailingComma": true,
   // ES6 Features
   "requireShorthandArrowFunctions": true,
   "disallowParenthesesAroundArrowParam": true,
   "disallowIdenticalDestructuringNames": true,
   "requireSpread": true,
   "requireNumericLiterals": true,
-  "requireTemplateStrings": true,
+  "requireEnhancedObjectLiterals": true,
+  "requireTemplateStrings": {"allExcept": ["stringConcatenation"]},
+  "requireEnhancedObjectLiterals": true,
   // Quotes, Semicolons, Braces, IIFE
   "requireSemicolons": true,
   "validateQuoteMarks": {"mark": "'", "escape": true},
@@ -92,15 +95,16 @@
   // Validation
   "validateIndentation": 2,
   "validateLineBreaks": {"character": "LF", "reportOncePerFile": true},
-  "validateNewlineAfterArrayElements": true,
+  "validateNewlineAfterArrayElements": {"ignoreBrackets": true},
   "disallowYodaConditions": true,
   "disallowNestedTernaries": true,
   "maximumLineLength": 80,
   // Params
-  "disallowUnusedParams": true,
+  // FIXME: Uncomment when http://bit.ly/1Nrdw9s is fixed.
+  // "disallowUnusedParams": true,
   "requireAlignedMultilineParams": 2,
   // Specific Requires/Disallows
-  "disallowKeywords": ["with", "continue"],
+  "disallowKeywords": ["with", "continue", "class"],
   "safeContextKeyword": ["self"],
   "disallowImplicitTypeConversion": ["numeric", "boolean", "binary", "string"],
   "disallowMultipleVarDecl": true

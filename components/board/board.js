@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import templ from './board.jsx';
 
 export default React.createClass({
-  render: function() {
+  render() {
     return templ(this.props);
   },
   propTypes: {

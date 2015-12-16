@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import board from './board';
+import entities from './entities';
 
-const rootReducer = combineReducers({board});
+const rootReducer = combineReducers({entities});
 
 export default rootReducer;

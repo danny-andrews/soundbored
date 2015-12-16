@@ -1,10 +1,12 @@
 import expect from 'expect';
-import reducer from '../../reducers/board';
-import * as types from '../../constants/action-types';
+
+import { playSound } from 'app/actions/board';
+import reducer from 'app/reducers/board';
 
 describe('board reducer', () => {
   it('returns initial state', () => {
-    let res = reducer([], {type: types.PLAY_SOUND, id: 1});
-    expect(res).toEqual([]);
+    let initialState = {sounds: {1: {playCount: 1}}};
+    let res = reducer(initialState, playSound(1));
+    expect(res).toEqual(initialState);
   });
 });

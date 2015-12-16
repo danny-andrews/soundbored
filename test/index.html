@@ -3,18 +3,22 @@
 <head>
   <meta charset="utf-8">
   <title>Mocha Example</title>
-  <script src="../node_modules/mocha/mocha.js"></script>
-  <script src="../dist/vendor.js"></script>
-  <script type="text/javascript">
+  <script src="vendor.js"></script>
+  <script>
+    if(window.initMochaPhantomJS) {
+      window.initMochaPhantomJS();
+    }
     mocha.setup('bdd');
-    // Run tests once the page has loaded
-    $(document).ready(function() {
-      mocha.run();
-    });
   </script>
-  <script src="../dist/app.js"></script>
+  <script>
+    window.onload = function() {
+      mocha.run();
+    };
+  </script>
+  <script src="tests.js"></script>
 </head>
 <body>
   <div id="mocha"></div>
+  <div id="test-zone"></div>
 </body>
 </html>
