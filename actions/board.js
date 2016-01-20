@@ -1,5 +1,5 @@
-import * as types from '../constants/action-types';
+import { createAction } from 'redux-actions';
 
-export function playSound(id) {
-  return {type: types.PLAY_SOUND, id};
-}
+import { PLAY_SOUND } from 'app/constants';
+
+export const playSound = createAction(PLAY_SOUND);

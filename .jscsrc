@@ -13,7 +13,6 @@
   "requireCapitalizedComments": true,
   "requireSpaceAfterLineComment": true,
   // New lines
-  "requirePaddingNewLinesBeforeExport": true,
   "disallowPaddingNewlinesInBlocks": true,
   "requireCommaBeforeLineBreak": true,
   "requireKeywordsOnNewLine": ["else"],

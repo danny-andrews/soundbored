@@ -1,4 +1,9 @@
 {
   "presets": ["es2015"],
-  "plugins": ["syntax-jsx", "transform-react-jsx"]
+  "plugins": [
+    "syntax-jsx",
+    "transform-react-jsx",
+    "lodash",
+    "add-module-exports"
+  ]
 }

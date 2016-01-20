@@ -1,5 +1,5 @@
-import assert, { assertAll } from 'arg-assert';
-import values from 'lodash/values';
+import { assertAll } from 'arg-assert';
+import { values, merge } from 'lodash';
 
 function entityKey(entityType) {
   return `${entityType}s`;
@@ -10,19 +10,29 @@ function entitiesForType({state, entityType}) {
 }
 
 export function getAll({state, entityType}) {
-  assert(
-    state && state.entities,
-    '"state" must be an object with "entities" key'
-  );
-  assertAll({entityType});
+  if(Boolean(state.entities)) {
+    state = state.entities;
+  }
+  assertAll({state, entityType});
   return values(entitiesForType({state, entityType}));
 }
 
 export function get({state, entityType, id}) {
-  assert(
-    state && state.entities,
-    '"state" must be an object with "entities" key'
-  );
-  assertAll({entityType, id});
+  if(Boolean(state.entities)) {
+    state = state.entities;
+  }
+  assertAll({state, entityType, id});
   return entitiesForType({state, entityType})[id];
+}
+
+export function update({state, entityType, id, newVals}) {
+  if(Boolean(state.entities)) {
+    state = state.entities;
+  }
+  assertAll({state, entityType, id, newVals});
+  return merge({}, state, {
+    [entityType]: {
+      [id]: newVals
+    }
+  });
 }

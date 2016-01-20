@@ -2,7 +2,7 @@ import assert from 'arg-assert';
 import reqwest from 'reqwest';
 import { Schema, arrayOf, normalize } from 'normalizr';
 import { camelizeKeys, decamelizeKeys } from 'humps';
-import { API_VERSION, SINGLETON_ID } from 'app/constants/app';
+import { API_VERSION, SINGLETON_ID } from 'app/constants';
 
 export function callApi(spec) {
   let {data: data = null} = spec;

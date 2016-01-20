@@ -1,9 +1,8 @@
 import expect from 'expect';
 
-import { get } from 'app/store/querying';
 import api, { CALL_API } from 'app/middleware/api';
 import { ApiActionFac } from 'test/factories';
-import ServerStubber from 'test/helpers/server-stubber';
+import ServerStubber from 'test/support/server-stubber';
 
 const fakeStore = {getState() {}};
 
@@ -114,8 +113,7 @@ describe('Middleware - api', function() {
         expect(action.id).toBe(1);
         expect(action.response.code).toBe(200);
         expect(respData.result).toBe(30);
-        expect(get({state: respData, entityType: 'fake', id: 30}))
-          .toEqual({id: 30, message: 'hi'});
+        expect(respData.entities.fakes[30]).toEqual({id: 30, message: 'hi'});
       });
     });
   });

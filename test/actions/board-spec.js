@@ -1,10 +1,10 @@
 import expect from 'expect';
 
-import * as actions from 'app/actions/board';
-import * as types from 'app/constants/action-types';
+import { playSound } from 'app/actions';
+import { PLAY_SOUND } from 'app/constants';
 
-describe('board actions', () => {
+describe('Actions - board', () => {
   it('#playSound', () => {
-    expect(actions.playSound(1)).toEqual({type: types.PLAY_SOUND, id: 1});
+    expect(playSound(1)).toEqual({type: PLAY_SOUND, payload: 1});
   });
 });

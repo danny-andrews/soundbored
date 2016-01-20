@@ -3,8 +3,9 @@
 var path = require('path');
 var url = require('url');
 
-var webpackConfig = require('./webpack.config.js');
-var testWebpackConfig = require('./webpack.config.test.js');
+var webpackConfigProd = require('./webpack.config.js');
+var webpackConfigDemo = require('./webpack.config.demo.js');
+var webpackConfigtest = require('./webpack.config.test.js');
 
 const JS_GLOBS = [
   './*.js',
@@ -22,10 +23,9 @@ module.exports = function(grunt) {
       hostname: '<%= hostname %>',
       port: '<%= port %>'
     }),
-    webpackPath: path.join('webpack-dev-server', 'index.html'),
 
     open: {
-      webpack: {path: '<%= url %>/<%= webpackPath %>'}
+      webpack: {path: '<%= url %>/index.html'}
     },
     jscs: {all: JS_GLOBS},
     jshint: {
@@ -39,12 +39,13 @@ module.exports = function(grunt) {
         host: '<%= hostname %>',
         port: '<%= port %>'
       },
-      demo: {webpack: webpackConfig},
-      test: {webpack: testWebpackConfig, contentBase: 'test'}
+      demo: {webpack: webpackConfigDemo},
+      test: {webpack: webpackConfigtest, contentBase: 'test'}
     },
     webpack: {
-      dist: webpackConfig,
-      test: testWebpackConfig
+      dist: webpackConfigProd,
+      demo: webpackConfigDemo,
+      test: webpackConfigtest
     },
     shell: {
       mocha: {
@@ -62,7 +63,11 @@ module.exports = function(grunt) {
     'shell:mocha'
   ]);
   grunt.registerTask('serve', 'Serve code.', function(env) {
-    grunt.task.run('compile:' + env, 'webpack-dev-server:' + env);
+    grunt.task.run(
+      'compile:' + env,
+      'open:webpack',
+      'webpack-dev-server:' + env
+    );
   });
   grunt.registerTask(
     'demo',

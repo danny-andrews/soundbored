@@ -1,7 +1,9 @@
 import { assertAll } from 'arg-assert';
-import { merge } from 'lodash/merge';
-import transform from 'lodash/transform';
+import { merge, transform, cloneDeep } from 'lodash';
 import { handleActions } from 'redux-actions';
+
+import { update } from 'app/store/querying';
+import { PLAY_SOUND } from 'app/constants';
 
 const INITIAL_STATE = {
   soundIds: [],
@@ -21,8 +23,19 @@ function transformEntity({entity, entityType}) {
   return Boolean(klass) ? new klass(entity) : entity;
 }
 
+function playSoundHandler(state, action) {
+  const id = action.payload;
+  const newPlayCount = state.sounds[id].playCount + 1;
+  return update({
+    state,
+    id,
+    entityType: 'sounds',
+    newVals: {playCount: newPlayCount}
+  });
+}
+
 export default function(state = INITIAL_STATE, action) {
-  let newState = state;
+  let newState = cloneDeep(state);
   const entities = Boolean(action.response) && action.response.entities;
   if(Boolean(entities)) {
     const transformedEntities =
@@ -34,7 +47,9 @@ export default function(state = INITIAL_STATE, action) {
     newState = merge({}, newState, transformedEntities);
   }
 
-  const actionHandlerRes = handleActions({})(newState, action);
+  const actionHandlerRes = handleActions({
+    [PLAY_SOUND]: playSoundHandler
+  })(newState, action);
 
   return actionHandlerRes !== newState ? actionHandlerRes : newState;
 }
