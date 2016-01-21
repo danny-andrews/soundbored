@@ -1,12 +1,18 @@
 /* jshint varstmt: false */
+var glob = require('glob');
 var readJSONSync = require('jsonfile').readFileSync;
 var path = require('path');
 var pull = require('lodash').pull;
+var last = require('lodash').last;
 var webpack = require('webpack');
 
 var pkg = readJSONSync('package.json');
 var dependencies = Object.keys(pkg.dependencies);
 pull(dependencies, 'core-js', 'lodash');
+const SOUNDFILES = glob.sync('test/public/sounds/*.@(mp3|wav)')
+  .map(function(filepath) {
+    return last(filepath.split(path.sep));
+  });
 
 module.exports = {
   entry: {vendor: dependencies},
@@ -38,6 +44,10 @@ module.exports = {
       DockMonitor: 'redux-devtools-dock-monitor',
       selector: 'app/containers/dev-tools/selector',
       SoundPlayer: 'app/components/sound-player'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.ASSET_PATH': JSON.stringify('test/public'),
+      'process.env.SOUNDFILES': JSON.stringify(SOUNDFILES)
     })
   ],
   resolve: {

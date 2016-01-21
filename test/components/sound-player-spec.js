@@ -18,7 +18,7 @@ describe('Component - SoundPlayer', function() {
   });
 
   it('renders properly', function() {
-    expect(this.el.type).toBe('div');
+    expect(this.el.type).toBe('span');
     expect(this.button.props.children).toBe('PlayMe');
   });
 });

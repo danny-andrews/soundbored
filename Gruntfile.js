@@ -63,11 +63,7 @@ module.exports = function(grunt) {
     'shell:mocha'
   ]);
   grunt.registerTask('serve', 'Serve code.', function(env) {
-    grunt.task.run(
-      'compile:' + env,
-      'open:webpack',
-      'webpack-dev-server:' + env
-    );
+    grunt.task.run('open:webpack', 'webpack-dev-server:' + env);
   });
   grunt.registerTask(
     'demo',

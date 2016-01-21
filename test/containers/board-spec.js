@@ -1,7 +1,6 @@
 import expect from 'expect';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import ServerStubber from 'test/support/server-stubber';
 
 import Board from 'app/containers/board';
 import { SoundFac } from 'test/factories';
@@ -9,7 +8,6 @@ import { containerElFac } from 'test/support/component-helpers';
 
 describe('Containers - Board', function() {
   beforeEach(function() {
-    this.stubber = ServerStubber();
     const props = {children: React.createElement(Board, props)};
     const reactEl = containerElFac({
       klass: Board,

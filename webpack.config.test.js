@@ -24,8 +24,10 @@ module.exports = i.merge(webpackConfigBase, {
   },
   plugins: webpackConfigBase.plugins.concat(
     new ExtractTextPlugin('vendor', 'vendor.css'),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('test')
+    new webpack.DefinePlugin({'process.env.NODE_ENV': JSON.stringify('test')}),
+    // For phantomjs
+    new webpack.ProvidePlugin({
+      'Array.from': 'core-js/fn/array/from'
     })
   ),
   devtool: 'source-map'

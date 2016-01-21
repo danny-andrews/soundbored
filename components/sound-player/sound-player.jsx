@@ -1,4 +1,4 @@
-<div>
+<span>
   <button onClick={context.playSound}>{context.sound.displayName}</button>
-  <audio preload="auto" style={{display: 'none'}} src={context.soundFilePath} />
-</div>
+  {context.players.map(player => <audio key={player.id} preload="auto" onEnded={player.onEnded} style={{display: 'none'}} src={context.soundFilePath} ></audio>)}
+</span>
