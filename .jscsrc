@@ -73,7 +73,6 @@
   "disallowIdenticalDestructuringNames": true,
   "requireSpread": true,
   "requireNumericLiterals": true,
-  "requireEnhancedObjectLiterals": true,
   "requireTemplateStrings": {"allExcept": ["stringConcatenation"]},
   "requireEnhancedObjectLiterals": true,
   // Quotes, Semicolons, Braces, IIFE

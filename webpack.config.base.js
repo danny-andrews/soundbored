@@ -1,4 +1,5 @@
 /* jshint varstmt: false */
+/* jscs:disable requireTemplateStrings, requireEnhancedObjectLiterals */
 var glob = require('glob');
 var readJSONSync = require('jsonfile').readFileSync;
 var path = require('path');
@@ -44,10 +45,6 @@ module.exports = {
       DockMonitor: 'redux-devtools-dock-monitor',
       selector: 'app/containers/dev-tools/selector',
       SoundPlayer: 'app/components/sound-player'
-    }),
-    new webpack.DefinePlugin({
-      'process.env.ASSET_PATH': JSON.stringify('test/public'),
-      'process.env.SOUNDFILES': JSON.stringify(SOUNDFILES)
     })
   ],
   resolve: {
@@ -56,5 +53,9 @@ module.exports = {
       app: path.resolve(),
       test: path.resolve('test')
     }
+  },
+  configVals: {
+    ASSET_PATH: path.join('test', 'public'),
+    SOUNDFILES: SOUNDFILES
   }
 };

@@ -15,7 +15,7 @@ export const SoundFac = new Factory()
       return filename;
     }
     else {
-      return 'woof.mp3';
+      return 'wow.mp3';
     }
   })
   .attr('playCount', 0);

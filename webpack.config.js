@@ -13,7 +13,9 @@ module.exports = i.merge(webpackConfigBase, {
   output: {path: path.resolve(DIST_PATH)},
   plugins: webpackConfigBase.plugins.concat(
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
+      'process.env': JSON.stringify(
+        i.assign(webpackConfigBase.configVals, {NODE_ENV: 'production'})
+      )
     })
   )
 });

@@ -10,7 +10,9 @@ module.exports = i.merge(webpackConfigBase, {
   output: {path: path.resolve('dist')},
   plugins: webpackConfigBase.plugins.concat(
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development')
+      'process.env': JSON.stringify(
+        i.assign(webpackConfigBase.configVals, {NODE_ENV: 'development'})
+      )
     })
   ),
   devtool: 'source-map'
