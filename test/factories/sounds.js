@@ -1,3 +1,4 @@
+import assert from 'arg-assert';
 import { Factory } from 'rosie';
 
 export const SoundFac = new Factory()
@@ -6,8 +7,11 @@ export const SoundFac = new Factory()
   .attr('displayName', 'Woof!')
   .attr('filename', ['filename'], function(filename) {
     if(Boolean(filename)) {
-      console.warn("[Sound Factory]: Don't set a custom filename unless you " +
-        "have to, to avoid 404\'s when rednering SoundPlayer components");
+      assert(
+        process.env.NODE_ENV !== 'test',
+        "[Sound Factory]: Don't set a custom filename, so as to avoid 404\'s" +
+          ' when rendering audio tags in tests'
+      );
       return filename;
     }
     else {
