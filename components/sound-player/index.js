@@ -2,6 +2,7 @@ import { range } from 'lodash';
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 
+import config from 'app/util/config';
 import templ from './sound-player.jsx';
 import ResourcePool from 'app/util/resource-pool';
 
@@ -34,7 +35,7 @@ export default React.createClass({
       {
         playSound: this.playSound,
         soundFilePath: [
-          process.env.ASSET_PATH,
+          config.get('ASSET_PATH'),
           'sounds',
           this.props.sound.filename
         ].join('/'),

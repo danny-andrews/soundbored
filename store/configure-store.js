@@ -1,4 +1,6 @@
-if(process.env.NODE_ENV === 'production') {
+import config from 'app/util/config';
+
+if(config.inProd()) {
   module.exports = require('./configure-store.prod');
 }
 else {
