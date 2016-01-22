@@ -1,17 +1,29 @@
 import expect from 'expect';
+import stubber from 'fetch-mock';
+import { has } from 'lodash';
+import { Schema } from 'normalizr';
 
-import api, { CALL_API } from 'app/middleware/api';
+import middleware, { CALL_API } from 'app/middleware/api';
 import { ApiActionFac } from 'test/factories';
-import ServerStubber from 'test/support/server-stubber';
 
-const fakeStore = {getState() {}};
+const fakeSchema = new Schema('fakes');
+
+function subject(spec = {}) {
+  let {action} = spec;
+  const {
+    nextFunc: nextFunc = () => {},
+    supportedSchemas: supportedSchemas = [fakeSchema]
+  } = spec;
+  const apiOpts = action[CALL_API];
+  if(apiOpts && (!has(apiOpts, 'schema') || apiOpts.schema)) {
+    action[CALL_API].schema = fakeSchema;
+  }
+  return middleware({supportedSchemas})()(nextFunc)(action);
+}
 
 describe('Middleware - api', function() {
-  beforeEach(function() {
-    this.stubber = ServerStubber();
-  });
   afterEach(function() {
-    this.stubber.destroy();
+    stubber.reset();
   });
 
   context(`${CALL_API} is not defined on action`, function() {
@@ -22,13 +34,13 @@ describe('Middleware - api', function() {
 
     it('calls next with given action', function() {
       let spy = expect.createSpy();
-      api(fakeStore)(spy)(this.fakeAction);
+      subject({nextFunc: spy, action: this.fakeAction});
       expect(spy.calls.length).toBe(1);
       expect(spy).toHaveBeenCalledWith(this.fakeAction);
     });
 
     it('returns result of calling next with given action', function() {
-      let actual = api(fakeStore)(() => 4)(this.fakeAction);
+      let actual = subject({nextFunc: () => 4, action: this.fakeAction});
       expect(actual).toBe(4);
     });
   });
@@ -37,21 +49,21 @@ describe('Middleware - api', function() {
     let fakeAction = ApiActionFac.build({
       [CALL_API]: {schema: undefined}
     });
-    expect(() => api(fakeStore)(() => {})(fakeAction)).toThrow(/schemas/i);
+    expect(() => subject({action: fakeAction})).toThrow(/schemas/i);
   });
 
-  it('throws error when endpoint is not a string', function() {
+  it('throws error when url is not a string', function() {
     let fakeAction = ApiActionFac.build({
-      [CALL_API]: {endpoint: 3}
+      [CALL_API]: {url: 3}
     });
-    expect(() => api(fakeStore)(() => {})(fakeAction)).toThrow(/endpoint/i);
+    expect(() => subject({action: fakeAction})).toThrow(/url/i);
   });
 
   it('throws error when requestType is undefined', function() {
     let fakeAction = ApiActionFac.build({
       [CALL_API]: {types: {requestType: undefined}}
     });
-    expect(() => api(fakeStore)(() => {})(fakeAction)).toThrow(/request/i);
+    expect(() => subject({action: fakeAction})).toThrow(/request/i);
   });
 
   it('throws error when successType is undefined', function() {
@@ -60,7 +72,7 @@ describe('Middleware - api', function() {
         types: {successType: undefined}
       }
     });
-    expect(() => api(fakeStore)(() => {})(fakeAction)).toThrow(/request/i);
+    expect(() => subject({action: fakeAction})).toThrow(/request/i);
   });
 
   it('throws error when failureType is undefined', function() {
@@ -69,30 +81,29 @@ describe('Middleware - api', function() {
         types: {failureType: undefined}
       }
     });
-    expect(() => api(fakeStore)(() => {})(fakeAction)).toThrow(/request/i);
+    expect(() => subject({action: fakeAction})).toThrow(/request/i);
   });
 
   it('calls next with action (excluding CALL_API)', function() {
     let fakeAction = ApiActionFac.build({
       id: 1,
       [CALL_API]: {
-        endpoint: 'data/2',
+        url: '/data/2',
         method: 'POST',
         types: {requestType: 'REQ_TYPE'}
       }
     });
-    this.stubber.stubRequest('data/2', {method: 'POST'});
+    stubber.mock(/data\/2/, 'POST', {body: {}});
     return new Promise(
-      resolve => api(fakeStore)(resolve)(fakeAction))
-        .then(actual => expect(actual).toEqual({type: 'REQ_TYPE', id: 1}));
+      resolve => subject({nextFunc: resolve, action: fakeAction})
+        .then(actual => expect(actual).toEqual({type: 'REQ_TYPE', id: 1}))
+    );
   });
 
   context('api call succeeds', function() {
     beforeEach(function() {
-      this.stubber.stubRequest('data/1', {
-        method: 'POST',
-        code: 200,
-        data: {id: 30, message: 'hi'}
+      stubber.mock(/data\/1/, 'POST', {
+        body: {id: 30, message: 'hi'}
       });
     });
 
@@ -100,13 +111,13 @@ describe('Middleware - api', function() {
       let fakeAction = ApiActionFac.build({
         id: 1,
         [CALL_API]: {
-          endpoint: 'data/1',
+          url: 'data/1',
           method: 'POST',
           types: {successType: 'SUCCESS'}
         }
       });
       let spy = expect.createSpy();
-      return api(fakeStore)(spy)(fakeAction).then(() => {
+      return subject({nextFunc: spy, action: fakeAction}).then(() => {
         const action = spy.calls[1].arguments[0];
         const respData = action.response.data;
         expect(action.type).toBe('SUCCESS');
@@ -120,10 +131,9 @@ describe('Middleware - api', function() {
 
   context('api call fails', function() {
     beforeEach(function() {
-      this.stubber.stubRequest('data/1', {
-        method: 'GET',
-        code: 401,
-        data: {message: 'you are not authorized'}
+      stubber.mock(/data\/1/, {
+        status: 401,
+        body: {message: 'you are not authorized'}
       });
     });
 
@@ -131,13 +141,13 @@ describe('Middleware - api', function() {
       let fakeAction = ApiActionFac.build({
         id: 1,
         [CALL_API]: {
-          endpoint: 'data/1',
+          url: 'data/1',
           method: 'GET',
           types: {failureType: 'FAILURE'}
         }
       });
       let spy = expect.createSpy();
-      return api(fakeStore)(spy)(fakeAction).then(() => {
+      return subject({nextFunc: spy, action: fakeAction}).then(() => {
         const action = spy.calls[1].arguments[0];
         expect(action.type).toBe('FAILURE');
         expect(action.id).toBe(1);
