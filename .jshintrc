@@ -21,6 +21,9 @@
   "maxdepth": 4,
   "maxcomplexity": 10,
 
+  // Globals
+  "predef": ["Request"],
+
   // Environment
   "esversion": 6,
   "browser": true,

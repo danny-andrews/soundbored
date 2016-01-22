@@ -8,7 +8,7 @@ export const ApiTypesFac = new Factory()
 
 export const ApiOptsFac = new Factory()
   .attr('schema', new Schema('fakes'))
-  .attr('endpoint', '/fake/api')
+  .attr('url', '/fake/api')
   .attr('crossOrigin', false)
   .attr('types', ['types'], function(types) {
     return ApiTypesFac.build(types);

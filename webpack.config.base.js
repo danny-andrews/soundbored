@@ -37,6 +37,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       Promise: 'core-js/library/es6/promise',
       'Object.assign': 'core-js/fn/object/assign',
+      fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
       ReactRedux: 'react-redux',
       App: 'app/containers/root',
       DevTools: 'app/containers/dev-tools',
@@ -51,7 +52,8 @@ module.exports = {
     root: __dirname,
     alias: {
       app: path.resolve(),
-      test: path.resolve('test')
+      test: path.resolve('test'),
+      fetch: 'whatwg-fetch'
     }
   },
   configVals: {
