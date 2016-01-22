@@ -1,9 +1,6 @@
 import expect from 'expect';
 
-import reducer from 'app/reducers';
-import ReducerHelper from 'test/support/reducer-helper';
-
-const subject = ReducerHelper(reducer).reduce;
+import subject from 'app/reducers';
 
 describe('Reducer - root', function() {
   beforeEach(function() {

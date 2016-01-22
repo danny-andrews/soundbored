@@ -8,6 +8,7 @@ export const ActionFac = new Factory()
 
 export const ApiActionFac = new Factory()
   .extend(ActionFac)
-  .attr(CALL_API, ['CALL_API'], function(callApi) {
-    return ApiOptsFac.build(callApi);
+  .attr('CALL_API')
+  .attr('payload', ['CALL_API'], function(callApi) {
+    return {[CALL_API]: ApiOptsFac.build(callApi)};
   });

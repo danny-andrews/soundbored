@@ -10,9 +10,7 @@ var webpackConfigBase = i.freeze(require('./webpack.config.base.js'));
 module.exports = i.merge(webpackConfigBase, {
   entry: {
     tests: glob.sync('test/*/*spec.js'),
-    vendor: webpackConfigBase.entry
-      .vendor
-      .concat('mocha/mocha.js', 'mocha/mocha.css')
+    vendor: ['mocha/mocha.js', 'mocha/mocha.css']
   },
   output: {path: path.resolve('test', 'dist')},
   module: {
