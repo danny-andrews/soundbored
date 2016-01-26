@@ -4,6 +4,7 @@ import { has } from 'lodash';
 import { Schema } from 'normalizr';
 
 import middleware, { CALL_API } from 'app/middleware/api';
+import { ab2str } from 'app/util/audio-helpers';
 import { ApiActionFac } from 'test/factories';
 
 const fakeSchema = new Schema('fakes');
@@ -14,22 +15,22 @@ function subject(spec = {}) {
     nextFunc: nextFunc = () => {},
     supportedSchemas: supportedSchemas = [fakeSchema]
   } = spec;
-  const apiOpts = action[CALL_API];
+  const {payload: {[CALL_API]: apiOpts}} = action;
   if(apiOpts && (!has(apiOpts, 'schema') || apiOpts.schema)) {
-    action[CALL_API].schema = fakeSchema;
+    action.payload[CALL_API].schema = fakeSchema;
   }
   return middleware({supportedSchemas})()(nextFunc)(action);
 }
 
 describe('Middleware - api', function() {
   afterEach(function() {
-    stubber.reset();
+    stubber.restore();
   });
 
   context(`${CALL_API} is not defined on action`, function() {
     beforeEach(function() {
       this.fakeAction = ApiActionFac.build();
-      this.fakeAction[CALL_API] = undefined;
+      this.fakeAction.payload[CALL_API] = undefined;
     });
 
     it('calls next with given action', function() {
@@ -59,20 +60,13 @@ describe('Middleware - api', function() {
     expect(() => subject({action: fakeAction})).toThrow(/url/i);
   });
 
-  it('throws error when requestType is undefined', function() {
-    let fakeAction = ApiActionFac.build({
-      [CALL_API]: {types: {requestType: undefined}}
-    });
-    expect(() => subject({action: fakeAction})).toThrow(/request/i);
-  });
-
   it('throws error when successType is undefined', function() {
     let fakeAction = ApiActionFac.build({
       [CALL_API]: {
         types: {successType: undefined}
       }
     });
-    expect(() => subject({action: fakeAction})).toThrow(/request/i);
+    expect(() => subject({action: fakeAction})).toThrow(/success/i);
   });
 
   it('throws error when failureType is undefined', function() {
@@ -81,23 +75,25 @@ describe('Middleware - api', function() {
         types: {failureType: undefined}
       }
     });
-    expect(() => subject({action: fakeAction})).toThrow(/request/i);
+    expect(() => subject({action: fakeAction})).toThrow(/failure/i);
   });
 
   it('calls next with action (excluding CALL_API)', function() {
     let fakeAction = ApiActionFac.build({
+      type: 'REQ_TYPE',
       id: 1,
       [CALL_API]: {
-        url: '/data/2',
-        method: 'POST',
-        types: {requestType: 'REQ_TYPE'}
+        url: '/data/1',
+        method: 'POST'
       }
     });
-    stubber.mock(/data\/2/, 'POST', {body: {}});
-    return new Promise(
-      resolve => subject({nextFunc: resolve, action: fakeAction})
-        .then(actual => expect(actual).toEqual({type: 'REQ_TYPE', id: 1}))
-    );
+    stubber.mock(/data\/1/, 'POST', {body: {}});
+    return new Promise(resolve =>
+      subject({nextFunc: resolve, action: fakeAction})
+    ).then(actual => {
+      expect(actual.id).toEqual(1);
+      expect(actual.type).toEqual('REQ_TYPE');
+    });
   });
 
   context('api call succeeds', function() {
@@ -109,10 +105,10 @@ describe('Middleware - api', function() {
 
     it('calls next with response from api call', function() {
       let fakeAction = ApiActionFac.build({
-        id: 1,
         [CALL_API]: {
           url: 'data/1',
           method: 'POST',
+          body: {},
           types: {successType: 'SUCCESS'}
         }
       });
@@ -121,8 +117,7 @@ describe('Middleware - api', function() {
         const action = spy.calls[1].arguments[0];
         const respData = action.response.data;
         expect(action.type).toBe('SUCCESS');
-        expect(action.id).toBe(1);
-        expect(action.response.code).toBe(200);
+        expect(action.response.status).toBe(200);
         expect(respData.result).toBe(30);
         expect(respData.entities.fakes[30]).toEqual({id: 30, message: 'hi'});
       });
@@ -139,10 +134,8 @@ describe('Middleware - api', function() {
 
     it('calls next with response from api call', function() {
       let fakeAction = ApiActionFac.build({
-        id: 1,
         [CALL_API]: {
           url: 'data/1',
-          method: 'GET',
           types: {failureType: 'FAILURE'}
         }
       });
@@ -150,9 +143,31 @@ describe('Middleware - api', function() {
       return subject({nextFunc: spy, action: fakeAction}).then(() => {
         const action = spy.calls[1].arguments[0];
         expect(action.type).toBe('FAILURE');
-        expect(action.id).toBe(1);
         expect(action.error).toBe('you are not authorized');
-        expect(action.code).toBe(401);
+        expect(action.response.status).toBe(401);
+      });
+    });
+  });
+
+  context('type = arrayBuffer', function() {
+    beforeEach(function() {
+      stubber.mock(/data\/1/, {body: 'I am binary data: 000111'});
+    });
+
+    it('calls next with response from api call', function() {
+      let fakeAction = ApiActionFac.build({
+        [CALL_API]: {
+          url: 'data/1',
+          type: 'arrayBuffer'
+        }
+      });
+      let spy = expect.createSpy();
+      return subject({nextFunc: spy, action: fakeAction}).then(() => {
+        const action = spy.calls[1].arguments[0];
+        const respData = action.response.data;
+        const blob = respData.entities.fakes[undefined].blob;
+        expect(blob).toExist();
+        expect(ab2str(blob)).toBe('I am binary data: 000111');
       });
     });
   });

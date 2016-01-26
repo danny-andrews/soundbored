@@ -1,6 +1,5 @@
 /* jshint varstmt: false */
 /* jscs:disable requireTemplateStrings */
-var path = require('path');
 var url = require('url');
 
 var webpackConfigProd = require('./webpack.config.js');
@@ -17,6 +16,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     port: grunt.option('port') || 4387,
+    demo_port: grunt.option('port') || 1234,
     hostname: grunt.option('host-name') || 'localhost',
     url: url.format({
       protocol: 'http',
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
         host: '<%= hostname %>',
         port: '<%= port %>'
       },
-      demo: {webpack: webpackConfigDemo},
+      demo: {webpack: webpackConfigDemo, port: '<%= demo_port %>'},
       test: {webpack: webpackConfigtest, contentBase: 'test'}
     },
     webpack: {
@@ -49,10 +49,7 @@ module.exports = function(grunt) {
     },
     shell: {
       mocha: {
-        command: path.join(
-          'node_modules/.bin/mocha-phantomjs <%= url %>',
-          'index.html'
-        )
+        command: 'mocha --require ./test/setup test/dist/tests.js'
       }
     }
   });
@@ -60,6 +57,7 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', 'Lint code.', ['jshint', 'jscs']);
   grunt.registerTask('test', 'Run tests.', [
     'lint',
+    'compile:test',
     'shell:mocha'
   ]);
   grunt.registerTask('serve', 'Serve code.', function(env) {

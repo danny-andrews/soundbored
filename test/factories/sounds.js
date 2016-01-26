@@ -1,6 +1,8 @@
 import assert from 'arg-assert';
 import { Factory } from 'rosie';
 
+const TEST_FILENAME = 'wow.mp3';
+
 export const SoundFac = new Factory()
   .sequence('id')
   .sequence('boardId')
@@ -15,7 +17,7 @@ export const SoundFac = new Factory()
       return filename;
     }
     else {
-      return 'wow.mp3';
+      return TEST_FILENAME;
     }
   })
   .attr('playCount', 0);

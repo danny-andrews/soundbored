@@ -1,11 +1,8 @@
 import expect from 'expect';
 
 import { playSound } from 'app/actions';
-import reducer from 'app/reducers/entities';
-import ReducerHelper from 'test/support/reducer-helper';
+import subject from 'app/reducers/entities';
 import { ActionFac, SoundFac } from 'test/factories';
-
-const subject = ReducerHelper(reducer).reduce;
 
 function actionResponseFactory(entitiesHash = {}) {
   return {response: {entities: entitiesHash}};
