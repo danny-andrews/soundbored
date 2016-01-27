@@ -26,12 +26,12 @@ module.exports = i.merge(webpackConfigBase, {
       'process.env': JSON.stringify(
         i.assign(webpackConfigBase.configVals, {
           NODE_ENV: 'test',
-          ASSET_PATH: 'public'
+          ASSET_PATH: 'public',
+          PROJECT_ROOT: path.resolve(),
+          LOCAL_PATH_SEP: path.sep
         })
       )
-    }),
-    // For phantomjs
-    new webpack.ProvidePlugin({'Array.from': 'core-js/fn/array/from'})
+    })
   ),
   devtool: 'source-map'
 });

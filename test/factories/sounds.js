@@ -1,7 +1,7 @@
 import assert from 'arg-assert';
 import { Factory } from 'rosie';
 
-const TEST_FILENAME = 'wow.mp3';
+export const TEST_FILENAME = 'wow.mp3';
 
 export const SoundFac = new Factory()
   .sequence('id')

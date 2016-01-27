@@ -18,6 +18,10 @@ describe('Containers - Board', function() {
         }
       }
     });
+    stubber.mock(/wow/, {
+      body: window.TEST_GLOBALS.soundReqMockData,
+      type: 'arrayBuffer'
+    });
     this.subject = renderIntoDocument(React.createElement(Board, {store}))
       .getWrappedInstance();
     this.buttons = scryRenderedDOMComponentsWithTag(this.subject, 'button');

@@ -6,6 +6,7 @@ global.document = jsdom(MARKUP);
 global.window = document.defaultView;
 global.self = global.window;
 global.navigator = global.window.navigator;
+global.window.jsdom = true;
 
 require('./dist/vendor');
 
