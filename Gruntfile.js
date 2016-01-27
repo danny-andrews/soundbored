@@ -47,15 +47,16 @@ module.exports = function(grunt) {
       demo: webpackConfigDemo,
       test: webpackConfigtest
     },
-    shell: {
-      mocha: {
-        command: 'mocha --require ./test/setup test/dist/tests.js'
+    mochaTest: {
+      test: {
+        options: {require: './test/setup'},
+        src: 'test/dist/tests.js'
       }
     }
   });
 
   grunt.registerTask('lint', 'Lint code.', ['jshint', 'jscs']);
-  grunt.registerTask('test', 'Run tests.', ['compile:test', 'shell:mocha']);
+  grunt.registerTask('test', 'Run tests.', ['compile:test', 'mochaTest']);
   grunt.registerTask('ci', 'Run lints and tests.', ['lint', 'test']);
   grunt.registerTask('serve', 'Serve code.', function(env) {
     grunt.task.run('open:webpack', 'webpack-dev-server:' + env);
