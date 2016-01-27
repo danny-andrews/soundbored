@@ -21,7 +21,7 @@ const audioContext = new AudioContext();
 let audioCache = i.freeze({});
 
 function AudioContextSoundPlayer(filepath) {
-  function decodeAudioData(audioContext, data) {
+  function decodeAudioData(data) {
     return new Promise((resolve, reject) =>
       audioContext.decodeAudioData(data, resolve, reject)
     );
@@ -45,7 +45,7 @@ function AudioContextSoundPlayer(filepath) {
     }
 
     return window.fetch(filepath).then(response => response.arrayBuffer())
-      .then(arrayBuffer => decodeAudioData(audioContext, arrayBuffer))
+      .then(arrayBuffer => decodeAudioData(arrayBuffer))
       .then(decodedData => {
         audioCache = i.set(audioCache, filepath, decodedData);
         return this;

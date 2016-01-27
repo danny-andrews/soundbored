@@ -34,7 +34,7 @@ export default function(spec = {}) {
     );
     assert(
       [successType, failureType]
-        .every(type => Boolean(type) && typeof type === 'string'),
+        .every(reqType => Boolean(reqType) && typeof reqType === 'string'),
       'Expected an object with "successType," and "failureType" ' +
         'defined as strings.'
     );

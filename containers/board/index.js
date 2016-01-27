@@ -18,7 +18,7 @@ function mapDispatchToProps(dispatch) {
 
 const Board = React.createClass({
   render() {
-    const {playSound, sounds} = this.props;
+    const {sounds} = this.props;
     const soundArray = values(sounds);
     const soundPlayers = soundArray.map(sound =>
       SoundPlayerFactory([
@@ -27,7 +27,11 @@ const Board = React.createClass({
         sound.filename
       ].join('/'))
     );
-    return templ({playSound, sounds: soundArray, soundPlayers});
+    return templ({
+      playSound: this.props.playSound,
+      sounds: soundArray,
+      soundPlayers
+    });
   },
   propTypes: {
     playSound: PropTypes.func.isRequired
