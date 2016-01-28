@@ -4,3 +4,5 @@ export const GET_AUDIO_BLOB_FAILURE = 'GET_AUDIO_BLOB_FAILURE';
 
 export const PLAY_SOUND = 'PLAY_SOUND';
 export const KILL_ALL_SOUNDS = 'KILL_ALL_SOUNDS';
+
+export const INIT = '@@INIT';
