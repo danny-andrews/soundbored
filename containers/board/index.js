@@ -3,22 +3,22 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import SoundPlayerFactory from 'app/util/sound-players';
+import SoundPlayerFactory from 'app/util/sound-player-factory';
 import config from 'app/util/config';
-import { playSound } from 'app/actions';
+import { playSound, killAllSounds } from 'app/actions';
 import templ from './board.jsx';
 
 function mapStateToProps(state) {
-  return {sounds: state.entities.sounds};
+  return {sounds: state.entities.sounds, previousAction: state.previousAction};
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({playSound}, dispatch);
+  return bindActionCreators({playSound, killAllSounds}, dispatch);
 }
 
 const Board = React.createClass({
   render() {
-    const {sounds} = this.props;
+    const {sounds, previousAction} = this.props;
     const soundArray = values(sounds);
     const soundPlayers = soundArray.map(sound =>
       SoundPlayerFactory([
@@ -29,8 +29,10 @@ const Board = React.createClass({
     );
     return templ({
       playSound: this.props.playSound,
+      killAllSounds: () => this.props.killAllSounds(),
       sounds: soundArray,
-      soundPlayers
+      soundPlayers,
+      previousAction
     });
   },
   propTypes: {

@@ -9,6 +9,10 @@ describe('Reducer - root', function() {
   });
 
   it('includes entities reducer', function() {
-    expect(this.newStateKeys.indexOf('entities')).toBeGreaterThan(-1);
+    expect(this.newStateKeys).toInclude('entities');
+  });
+
+  it('includes previous-action reducer', function() {
+    expect(this.newStateKeys).toInclude('previousAction');
   });
 });

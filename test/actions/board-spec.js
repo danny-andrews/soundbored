@@ -1,10 +1,21 @@
 import expect from 'expect';
 
-import { playSound } from 'app/actions';
-import { PLAY_SOUND } from 'app/constants';
+import { playSound, killAllSounds } from 'app/actions';
+import { PLAY_SOUND, KILL_ALL_SOUNDS } from 'app/constants';
 
 describe('Actions - board', () => {
-  it('#playSound', () => {
-    expect(playSound(1)).toEqual({type: PLAY_SOUND, payload: 1});
+  describe('#playSound', function() {
+    it('returns properly-formed action', () => {
+      const {type, payload} = playSound(1);
+      expect(type).toEqual(PLAY_SOUND);
+      expect(payload).toEqual(1);
+    });
+  });
+
+  describe('#killAllSounds', function() {
+    it('returns properly-formed action', () => {
+      const {type} = killAllSounds();
+      expect(type).toEqual(KILL_ALL_SOUNDS);
+    });
   });
 });
