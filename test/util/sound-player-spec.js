@@ -9,7 +9,7 @@ describe('AudioContextSoundPlayer', function() {
   beforeEach(function() {
     stubber.mock(new RegExp(TEST_FILENAME), {
       body: window.TEST_GLOBALS.soundReqMockData,
-      type: 'arrayBuffer'
+      sendAsJson: false
     });
     const soundPath = assetPath({filename: TEST_FILENAME});
     this.subject = SoundPlayerFactory(soundPath);
