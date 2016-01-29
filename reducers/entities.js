@@ -7,12 +7,13 @@ import { PLAY_SOUND } from 'app/constants';
 
 const INITIAL_STATE = {
   soundIds: [],
-  sounds: {},
   boards: {},
-  dj: {},
-  config: {},
+  configs: {},
+  djs: {},
+  keys: {},
   shortcuts: {},
-  keys: {}
+  shortcutCommands: {},
+  sounds: {}
 };
 
 const ENTITY_MODEL_MAP = {};
