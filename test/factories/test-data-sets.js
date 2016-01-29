@@ -1,28 +1,44 @@
-import { reduce } from 'lodash';
+import { reduce, range } from 'lodash';
 import i from 'icepick';
 
 import { SHORTCUT_ACTIONS } from 'app/constants';
 import config from 'app/util/config';
-import { SoundFac, KeyFac, ShortcutCommandFac, ShortcutFac, ConfigFac, DjFac }
-  from './';
+import * as facs from './';
 
 const TEST_DATA = {
-  configs: ConfigFac.buildList(1, {id: 1, dj_id: 1}),
-  djs: DjFac.buildList(1, {id: 1}),
-  keys: KeyFac.buildList(26, {id: 1}),
-  shortcuts: ShortcutFac.buildList(1, {
-    config_id: 1,
-    key_id: 1,
-    shortcutCommandId: 1
+  Board: facs.BoardFac.buildList(1, {
+    id: 1,
+    dj: 1,
+    sounds: [range(1, config.get('SOUNDFILES').length)]
   }),
-  shortcutCommands: [
-    ShortcutCommandFac.build({id: 1, name: SHORTCUT_ACTIONS.PLAY_SOUND}),
-    ShortcutCommandFac.build({name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS})
+  Config: facs.ConfigFac.buildList(1, {id: 1, dj: 1, shortcuts: [1]}),
+  DJ: facs.DjFac.buildList(1, {id: 1, boards: [1], config: 1}),
+  Key: facs.KeyFac
+    .buildList(25)
+    .concat(facs.KeyFac.build({id: 26, shortcuts: [1]})),
+  Shortcut: facs.ShortcutFac.buildList(1, {
+    id: 1,
+    config: 1,
+    key: 1,
+    shortcutCommand: 2
+  }),
+  ShortcutCommand: [
+    facs.ShortcutCommandFac.build({
+      id: 1,
+      shortcuts: [],
+      name: SHORTCUT_ACTIONS.PLAY_SOUND
+    }),
+    facs.ShortcutCommandFac.build({
+      id: 2,
+      shortcuts: [1],
+      name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS
+    })
   ],
-  sounds: config.inDev() ?
+  Sound: config.inDev() ?
     config.get('SOUNDFILES').map((filename, id) =>
-      SoundFac.build({
+      facs.SoundFac.build({
         id: id + 1,
+        boards: [1],
         filename,
         displayName: filename.split('.')[0]
       })
@@ -30,6 +46,9 @@ const TEST_DATA = {
     []
 };
 
-export const TEST_ENTITIES = reduce(TEST_DATA, (result, value, key) =>
-  i.set(result, key, value.reduce((res, curValue) =>
-    i.set(res, curValue.id, curValue), {})), {});
+export const TEST_ENTITIES = reduce(TEST_DATA, (result, value, key) => {
+  const idMap = value.reduce((res, curValue) =>
+    i.set(res, curValue.id, curValue), {}
+  );
+  return i.set(result, key, {itemsById: idMap, items: Object.keys(idMap)});
+}, {});

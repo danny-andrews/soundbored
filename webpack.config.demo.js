@@ -6,7 +6,16 @@ var webpack = require('webpack');
 var webpackConfigBase = i.freeze(require('./webpack.config.base.js'));
 
 module.exports = i.merge(webpackConfigBase, {
-  entry: {app: 'index.js'},
+  entry: {
+    app: [
+      'index.js',
+      'styles/app.scss'
+    ],
+    vendor: webpackConfigBase.entry.vendor.concat(
+      'materialize-css/dist/css/materialize.css',
+      'materialize-css/dist/js/materialize.js'
+    )
+  },
   output: {path: path.resolve('dist')},
   plugins: webpackConfigBase.plugins.concat(
     new webpack.DefinePlugin({
@@ -15,5 +24,5 @@ module.exports = i.merge(webpackConfigBase, {
       )
     })
   ),
-  devtool: 'source-map'
+  devtool: 'none'
 });

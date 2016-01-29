@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import DevTools from 'app/containers/dev-tools';
 import rootReducer from 'app/reducers';
 import { TEST_ENTITIES } from 'test/factories';
+import schema from 'app/store/schema';
 
 const INITIAL_STATE = {entities: TEST_ENTITIES};
 
@@ -14,5 +15,7 @@ const finalCreateStore = compose(
 )(createStore);
 
 export default function configureStore(initialState = INITIAL_STATE) {
-  return finalCreateStore(rootReducer, initialState);
+  const store = finalCreateStore(rootReducer, initialState);
+  schema.from(store.getState().entities);
+  return store;
 }

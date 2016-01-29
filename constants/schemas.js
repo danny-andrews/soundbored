@@ -4,24 +4,27 @@ import i from 'icepick';
 
 export const SINGLETON_ID = 'SINGLETON_ID';
 
-const boardSchema = new Schema('boards');
-const configSchema = new Schema('configs');
-const djSchema = new Schema('djs');
-const keySchema = new Schema('keys');
-const sessionSchema = new Schema('sessions', {idAttribute: () => SINGLETON_ID});
-const shortcutSchema = new Schema('shortcuts');
-const soundSchema = new Schema('sounds');
-const audioBlobSchema = new Schema('audioBlobs', {idAttribute: uuid.v4()});
+const boardSchema = new Schema('Board');
+const configSchema = new Schema('Config');
+const djSchema = new Schema('DJ');
+const keySchema = new Schema('Key');
+const sessionSchema = new Schema('Session', {idAttribute: () => SINGLETON_ID});
+const shortcutSchema = new Schema('Shortcut');
+const shortcutCommandSchema = new Schema('ShortcutCommand');
+const soundSchema = new Schema('Sound');
+const audioBlobSchema = new Schema('AudioBlob', {idAttribute: uuid.v4()});
 
 boardSchema.define({sounds: arrayOf(soundSchema), dj: djSchema});
+configSchema.define({dj: djSchema, shortcuts: arrayOf(shortcutSchema)});
 djSchema.define({config: configSchema, boards: arrayOf(boardSchema)});
 keySchema.define({shortcuts: arrayOf(shortcutSchema)});
+shortcutCommandSchema.define({shortcuts: arrayOf(shortcutSchema)});
 shortcutSchema.define({
   key: keySchema,
   sound: soundSchema,
-  configs: arrayOf(configSchema)
+  config: configSchema
 });
-soundSchema.define({board: boardSchema, shortcuts: arrayOf(shortcutSchema)});
+soundSchema.define({board: boardSchema, shortcut: shortcutSchema});
 
 export default i.freeze({
   SESSION: sessionSchema,
@@ -35,6 +38,8 @@ export default i.freeze({
   SOUND_ARRAY: arrayOf(soundSchema),
   SHORTCUT: shortcutSchema,
   SHORTCUT_ARRAY: arrayOf(shortcutSchema),
+  SHORTCUT_COMMAND: shortcutCommandSchema,
+  SHORTCUT_COMMAND_ARRAY: arrayOf(shortcutCommandSchema),
   KEY: keySchema,
   KEY_ARRAY: arrayOf(keySchema),
   AUDIO_BLOB: audioBlobSchema,

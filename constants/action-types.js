@@ -4,5 +4,8 @@ export const GET_AUDIO_BLOB_FAILURE = 'GET_AUDIO_BLOB_FAILURE';
 
 export const PLAY_SOUND = 'PLAY_SOUND';
 export const KILL_ALL_SOUNDS = 'KILL_ALL_SOUNDS';
+export const KEY_PRESS = 'KEY_PRESS';
+
+export const ASSIGN_SHORTCUT_KEYS = 'ASSIGN_SHORTCUT_KEYS';
 
 export const INIT = '@@INIT';

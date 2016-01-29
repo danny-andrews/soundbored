@@ -13,13 +13,7 @@ module.exports = i.merge(webpackConfigBase, {
     vendor: ['mocha/mocha.js', 'mocha/mocha.css']
   },
   output: {path: path.resolve('test', 'dist')},
-  module: {
-    noParse: /mocha\.js/,
-    loaders: webpackConfigBase.module.loaders.concat({
-      test: /\.css$/,
-      loader: ExtractTextPlugin.extract('style', 'css')
-    })
-  },
+  module: {noParse: /mocha\.js/},
   plugins: webpackConfigBase.plugins.concat(
     new ExtractTextPlugin('vendor', 'vendor.css'),
     new webpack.DefinePlugin({

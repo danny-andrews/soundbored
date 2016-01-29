@@ -2,49 +2,52 @@ import expect from 'expect';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
+import { merge } from 'icepick';
 
-import { SoundFac } from 'test/factories';
+import * as facs from 'test/factories';
 import SoundPlayer from 'app/components/sound-player';
 
-function FakeSoundPlayer(start) {
-  return {
-    setup: () => Promise.resolve({
-      load: () => Promise.resolve({start})
-    })
-  };
+function Subject(props = {}) {
+  const playSoundSpy = expect.createSpy();
+  props = merge({sound: facs.SoundFac.build(), playSound: playSoundSpy}, props);
+  const renderer = TestUtils.createRenderer();
+  renderer.render(React.createElement(SoundPlayer, props));
+  const component = TestUtils.renderIntoDocument(
+    React.createElement(SoundPlayer, props)
+  );
+  const domEl = ReactDOM.findDOMNode(component);
+  const button = TestUtils.findRenderedDOMComponentWithClass(
+    component,
+    'play-sound-btn'
+  );
+  return {component, domEl, button, playSoundSpy};
 }
 
 describe('Component - SoundPlayer', function() {
-  beforeEach(function() {
-    const sound = SoundFac.build({id: 12, displayName: 'PlayMe'});
-    this.playSoundSpy = expect.createSpy();
-    this.startSoundSpy = expect.createSpy();
-    const props = {
-      playSound: this.playSoundSpy,
-      sound,
-      soundPlayer: FakeSoundPlayer(this.startSoundSpy)
-    };
-    const renderer = TestUtils.createRenderer();
-    renderer.render(React.createElement(SoundPlayer, props));
-    this.component = TestUtils.renderIntoDocument(
-      React.createElement(SoundPlayer, props)
-    );
-    this.domEl = ReactDOM.findDOMNode(this.component);
-    this.button = TestUtils.findRenderedDOMComponentWithTag(
-      this.component,
-      'button'
-    );
+  context('if sound has related shortcut', function() {
+    it('renders key code on play button', function() {
+      const subject = Subject({
+        sound: facs.SoundFac.build({
+          shortcut: facs.ShortcutFac.build({
+            key: facs.KeyFac.build({code: 'KeyK'})
+          })
+        })
+      });
+      expect(subject.button.children[1].innerHTML).toMatch(/\(.*K.*\)/);
+    });
   });
 
   it('renders play button', function() {
-    expect(this.domEl.tagName.toLowerCase()).toBe('span');
-    expect(this.button.innerHTML).toBe('PlayMe');
+    const subject = Subject({
+      sound: facs.SoundFac.build({displayName: 'PlayMe'})
+    });
+    expect(subject.domEl.tagName.toLowerCase()).toBe('span');
+    expect(subject.button.children[0].innerHTML).toBe('PlayMe');
   });
 
   it('plays sound when button is pressed', function() {
-    return new Promise(resolve => {
-      this.startSoundSpy.andCall(resolve);
-      TestUtils.Simulate.click(this.button);
-    }).then(() => expect(this.playSoundSpy).toHaveBeenCalledWith(12));
+    const subject = Subject({sound: facs.SoundFac.build({id: 12})});
+    TestUtils.Simulate.click(subject.button);
+    expect(subject.playSoundSpy).toHaveBeenCalledWith(12);
   });
 });

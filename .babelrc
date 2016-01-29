@@ -3,7 +3,6 @@
   "plugins": [
     "syntax-jsx",
     "transform-react-jsx",
-    "lodash",
     "add-module-exports"
   ]
 }

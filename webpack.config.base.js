@@ -6,6 +6,7 @@ var path = require('path');
 var pull = require('lodash').pull;
 var last = require('lodash').last;
 var webpack = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var pkg = readJSONSync('package.json');
 var dependencies = Object.keys(pkg.dependencies);
@@ -29,6 +30,26 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract('style', ['css', 'sass'])
+      },
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract('style', 'css')
+      },
+      {
+        test: /\.woff(2)?$/,
+        loader: 'url-loader',
+        query: {
+          limit: 10000,
+          mimetype: 'application/font-woff'
+        }
+      },
+      {
+        test: /\.(ttf|eot|svg)$/,
+        loader: 'file-loader'
       }
     ]
   },
@@ -46,7 +67,8 @@ module.exports = {
       DockMonitor: 'redux-devtools-dock-monitor',
       selector: 'app/containers/dev-tools/selector',
       SoundPlayer: 'app/components/sound-player'
-    })
+    }),
+    new ExtractTextPlugin('app.css')
   ],
   resolve: {
     root: __dirname,

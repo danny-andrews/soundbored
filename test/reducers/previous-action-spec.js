@@ -12,7 +12,7 @@ describe('Reducer - previous-action', function() {
     expect(subject(undefined, this.action)).toBe(this.action);
   });
 
-  it('returns new state with previousAction set to action raised', function() {
+  it('returns action passed in', function() {
     const oldAction = ActionFac.build();
     expect(subject(oldAction, this.action)).toBe(this.action);
   });

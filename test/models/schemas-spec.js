@@ -14,26 +14,39 @@ describe('Models - schemas', function() {
     });
 
     it('uses "id" as id', function() {
-      expect(3 in this.subject.boards).toBe(true);
+      expect(3 in this.subject.Board).toBe(true);
     });
 
     it('has "dj" association', function() {
-      expect(this.subject.djs[12].name).toBe('Kaskade');
+      expect(this.subject.DJ[12].name).toBe('Kaskade');
     });
 
     it('has "sounds" association', function() {
-      expect(this.subject.sounds[92].name).toBe('beep');
-      expect(this.subject.sounds[71].name).toBe('boop');
+      expect(this.subject.Sound[92].name).toBe('beep');
+      expect(this.subject.Sound[71].name).toBe('boop');
     });
   });
 
   describe('config', function() {
     beforeEach(function() {
-      this.subject = normalize({id: 26}, schemas.CONFIG).entities;
+      this.subject = normalize({
+        id: 26,
+        dj: {id: 38, name: 'Bob'},
+        shortcuts: [{id: 354, name: 'pow'}, {id: 38, name: 'bam'}]
+      }, schemas.CONFIG).entities;
     });
 
     it('uses "id" as id', function() {
-      expect(26 in this.subject.configs).toBe(true);
+      expect(26 in this.subject.Config).toBe(true);
+    });
+
+    it('has "dj" association', function() {
+      expect(this.subject.DJ[38].name).toBe('Bob');
+    });
+
+    it('has "shortcuts" association', function() {
+      expect(this.subject.Shortcut[354].name).toBe('pow');
+      expect(this.subject.Shortcut[38].name).toBe('bam');
     });
   });
 
@@ -46,17 +59,17 @@ describe('Models - schemas', function() {
       }, schemas.DJ).entities;
     });
 
-    it('maintins id', function() {
-      expect(3 in this.subject.djs).toBe(true);
+    it('uses "id" as id', function() {
+      expect(3 in this.subject.DJ).toBe(true);
     });
 
     it('has "config" association', function() {
-      expect(this.subject.configs[1].configVal1).toBe('configVal1');
+      expect(this.subject.Config[1].configVal1).toBe('configVal1');
     });
 
     it('has "boards" association', function() {
-      expect(this.subject.boards[1].name).toBe('board1');
-      expect(this.subject.boards[2].name).toBe('board2');
+      expect(this.subject.Board[1].name).toBe('board1');
+      expect(this.subject.Board[2].name).toBe('board2');
     });
   });
 
@@ -68,13 +81,13 @@ describe('Models - schemas', function() {
       }, schemas.KEY).entities;
     });
 
-    it('maintins id', function() {
-      expect(52 in this.subject.keys).toBe(true);
+    it('uses "id" as id', function() {
+      expect(52 in this.subject.Key).toBe(true);
     });
 
-    it('has "boards" association', function() {
-      expect(2 in this.subject.shortcuts).toBe(true);
-      expect(5 in this.subject.shortcuts).toBe(true);
+    it('has "shortucts" association', function() {
+      expect(2 in this.subject.Shortcut).toBe(true);
+      expect(5 in this.subject.Shortcut).toBe(true);
     });
   });
 
@@ -84,7 +97,25 @@ describe('Models - schemas', function() {
     });
 
     it('uses "SINGLETON_ID" as id', function() {
-      expect(SINGLETON_ID in this.subject.sessions).toBe(true);
+      expect(SINGLETON_ID in this.subject.Session).toBe(true);
+    });
+  });
+
+  describe('shortcutCommand', function() {
+    beforeEach(function() {
+      this.subject = normalize({
+        id: 32,
+        shortcuts: [{id: 63, name: 'do this'}, {id: 732, name: 'do that'}]
+      }, schemas.SHORTCUT_COMMAND).entities;
+    });
+
+    it('uses "id" as id', function() {
+      expect(32 in this.subject.ShortcutCommand).toBe(true);
+    });
+
+    it('has "shortcuts" association', function() {
+      expect(this.subject.Shortcut[63].name).toBe('do this');
+      expect(this.subject.Shortcut[732].name).toBe('do that');
     });
   });
 
@@ -94,25 +125,24 @@ describe('Models - schemas', function() {
         id: 52,
         key: {id: 437},
         sound: {id: 2084},
-        configs: [{id: 16}, {id: 52}]
+        config: {id: 16}
       }, schemas.SHORTCUT).entities;
     });
 
-    it('maintins id', function() {
-      expect(52 in this.subject.shortcuts).toBe(true);
+    it('uses "id" as id', function() {
+      expect(52 in this.subject.Shortcut).toBe(true);
     });
 
     it('has "key" association', function() {
-      expect(437 in this.subject.keys).toBe(true);
+      expect(437 in this.subject.Key).toBe(true);
     });
 
     it('has "sound" association', function() {
-      expect(2084 in this.subject.sounds).toBe(true);
+      expect(2084 in this.subject.Sound).toBe(true);
     });
 
-    it('has "configs" association', function() {
-      expect(16 in this.subject.configs).toBe(true);
-      expect(52 in this.subject.configs).toBe(true);
+    it('has "config" association', function() {
+      expect(16 in this.subject.Config).toBe(true);
     });
   });
 
@@ -121,21 +151,20 @@ describe('Models - schemas', function() {
       this.subject = normalize({
         id: 320,
         board: {id: 17},
-        shortcuts: [{id: 2}, {id: 39}]
+        shortcut: {id: 327}
       }, schemas.SOUND).entities;
     });
 
-    it('maintins id', function() {
-      expect(320 in this.subject.sounds).toBe(true);
+    it('uses "id" as id', function() {
+      expect(320 in this.subject.Sound).toBe(true);
     });
 
     it('has "board" association', function() {
-      expect(17 in this.subject.boards).toBe(true);
+      expect(17 in this.subject.Board).toBe(true);
     });
 
-    it('has "shortcuts" association', function() {
-      expect(2 in this.subject.shortcuts).toBe(true);
-      expect(39 in this.subject.shortcuts).toBe(true);
+    it('has "shortcut" association', function() {
+      expect(327 in this.subject.Shortcut).toBe(true);
     });
   });
 
@@ -145,7 +174,7 @@ describe('Models - schemas', function() {
     });
 
     it('generates random id', function() {
-      expect(Object.keys(this.subject.audioBlobs)[0]).toNotBe(12);
+      expect(Object.keys(this.subject.AudioBlob)[0]).toNotBe(12);
     });
   });
 });

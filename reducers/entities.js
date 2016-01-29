@@ -1,56 +1,49 @@
-import { assertAll } from 'arg-assert';
-import { merge, transform, cloneDeep } from 'lodash';
+import i from 'icepick';
+import { transform, cloneDeep, uniq } from 'lodash';
 import { handleActions } from 'redux-actions';
 
-import { update } from 'app/store/querying';
+import { Sound } from 'app/models';
+import schema from 'app/store/schema';
 import { PLAY_SOUND } from 'app/constants';
 
 const INITIAL_STATE = {
   soundIds: [],
-  boards: {},
-  configs: {},
-  djs: {},
-  keys: {},
-  shortcuts: {},
-  shortcutCommands: {},
-  sounds: {}
+  Board: {
+    itemsById: {},
+    items: []
+  },
+  Config: {},
+  DJ: {
+    itemsById: {},
+    items: []
+  },
+  Key: {},
+  Shortcut: {},
+  ShortcutCommand: {},
+  Sound: {}
 };
-
-const ENTITY_MODEL_MAP = {};
-
-function transformEntity({entity, entityType}) {
-  assertAll({entity, entityType});
-  const klass = ENTITY_MODEL_MAP[entityType];
-  return Boolean(klass) ? new klass(entity) : entity;
-}
 
 function playSoundHandler(state, action) {
   const id = action.payload;
-  const newPlayCount = state.sounds[id].playCount + 1;
-  return update({
-    state,
-    id,
-    entityType: 'sounds',
-    newVals: {playCount: newPlayCount}
-  });
+  const sound = Sound.withId(id);
+  sound.update({playCount: sound.playCount + 1});
+  return i.merge(state, {Sound: Sound.getNextState()});
 }
 
 export default function(state = INITIAL_STATE, action) {
   let newState = cloneDeep(state);
-  const entities = Boolean(action.response) && action.response.entities;
-  if(Boolean(entities)) {
-    const transformedEntities =
-      transform(entities, (modEntities, idMap, entityType) =>
-        modEntities[entityType] = transform(idMap, (modIdMap, entity, id) =>
-          modIdMap[id] = transformEntity({entity, entityType})
-        )
-      );
-    newState = merge({}, newState, transformedEntities);
+  const entities = action.response && action.response.entities;
+  if(entities) {
+    newState = transform(entities, (modEntities, idMap, entityType) =>
+      modEntities[entityType] = {
+        itemsById: i.merge(newState[entityType].itemsById, idMap),
+        items: uniq(Object.keys(idMap).concat(newState[entityType].items))
+      }
+    );
   }
 
-  const actionHandlerRes = handleActions({
+  newState = handleActions({
     [PLAY_SOUND]: playSoundHandler
   })(newState, action);
-
-  return actionHandlerRes !== newState ? actionHandlerRes : newState;
+  return schema.reducer()(newState, action);
 }
