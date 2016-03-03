@@ -1,43 +1,44 @@
-import { normalize } from 'normalizr';
 import { camelizeKeys, decamelizeKeys } from 'humps';
 
 const identity = () => arg => arg;
 
-function NullSerializer() {
+export function NullSerializer() {
   return Object.freeze({serialize: identity, deserialize: identity});
 }
 
-function ArrayBufferSerializer(options = {}) {
-  const {schema} = options;
-  function serialize(data) {
+export function ArrayBufferSerializer(data) {
+  function serialize() {
     return decamelizeKeys(data);
   }
-  function deserialize(data) {
-    return normalize({blob: data}, schema);
+  function deserialize() {
+    return {blob: data};
   }
 
   return Object.freeze({serialize, deserialize});
 }
 
-function JSONSerializer(options = {}) {
-  const {schema} = options;
-  function serialize(data) {
+export function JSONSerializer(data) {
+  function serialize() {
     return JSON.stringify(decamelizeKeys(data));
   }
-  function deserialize(data) {
-    return normalize(camelizeKeys(data), schema);
+  function deserialize() {
+    let retVal = data;
+    if(typeof data === 'string') {
+      retVal = JSON.parse(data);
+    }
+    return camelizeKeys(retVal);
   }
 
   return Object.freeze({serialize, deserialize});
 }
 
-export default function(responseType, options) {
+export default function(responseType, data) {
   switch(responseType) {
   case 'json':
-    return JSONSerializer(options);
+    return JSONSerializer(data);
   case 'arrayBuffer':
-    return ArrayBufferSerializer(options);
+    return ArrayBufferSerializer(data);
   default:
-    return NullSerializer(options);
+    return NullSerializer(data);
   }
 }

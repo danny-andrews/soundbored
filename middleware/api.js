@@ -12,70 +12,58 @@ const SUPPORTED_RESPONSE_TYPES = ['json', 'arrayBuffer'];
 
 // A Redux middleware that interprets actions with CALL_API info specified.
 // Performs the call and resolves promise when such actions are dispatched.
-export default function(spec = {}) {
-  const {supportedSchemas} = spec;
+export default () => next => action => {
+  const apiOptions = action.payload && action.payload[CALL_API];
+  if(apiOptions === undefined) {
+    return next(action);
+  }
+
+  const {url, type, types: {successType, failureType}} = apiOptions;
+
+  assert(typeof url === 'string', 'Specify a string URL.');
   assert(
-    Array.isArray(supportedSchemas) && supportedSchemas.length > 0,
-    '"supportedSchemas" must be an array of length > 0'
+    [successType, failureType]
+      .every(reqType => Boolean(reqType) && typeof reqType === 'string'),
+    'Expected an object with "successType," and "failureType" ' +
+      'defined as strings.'
+  );
+  assert(
+    SUPPORTED_RESPONSE_TYPES.indexOf(type) > -1,
+    `Unsupported response type: ${type}`
   );
 
-  return () => next => action => {
-    const {payload: {[CALL_API]: apiOptions}} = action;
-    if(typeof apiOptions === 'undefined') {
-      return next(action);
-    }
+  function nextWithAction(actionData) {
+    const finalAction = i.assign(action, actionData);
+    return next(i.unset(finalAction, CALL_API));
+  }
 
-    const {url, schema, type, types: {successType, failureType}} = apiOptions;
+  nextWithAction({type: action.type});
 
-    assert(typeof url === 'string', 'Specify a string URL.');
-    assert(
-      supportedSchemas.some(supportedSchema => supportedSchema === schema),
-      'Specify one of the exported Schemas.'
-    );
-    assert(
-      [successType, failureType]
-        .every(reqType => Boolean(reqType) && typeof reqType === 'string'),
-      'Expected an object with "successType," and "failureType" ' +
-        'defined as strings.'
-    );
-    assert(
-      SUPPORTED_RESPONSE_TYPES.indexOf(type) > -1,
-      `Unsupported response type: ${type}`
-    );
-
-    function nextWithAction(actionData) {
-      const finalAction = i.assign(action, actionData);
-      return next(i.unset(finalAction, CALL_API));
-    }
-
-    nextWithAction({type: action.type});
-
-    const serializer = SerializerFactory(type, {schema});
-    const adapterOpts = i.assign(apiOptions, {
-      mode: apiOptions.crossOrigin ? 'cors' : 'same-origin',
-      body: serializer.serialize(apiOptions.body)
-    });
-    return window.fetch(url, adapterOpts)
-      .then(response =>
-        response[type]().then(respData => {
-          if(response.ok) {
-            nextWithAction({
-              type: successType,
-              response: {
-                data: serializer.deserialize(respData),
-                status: response.status
-              }
-            });
-          }
-          else {
-            const data = camelizeKeys(respData);
-            nextWithAction({
-              type: failureType,
-              error: data.message,
-              response: {data, status: response.status}
-            });
-          }
-        })
-      ).catch(err => error(`Error making request ${err}`));
-  };
-}
+  const serializer = SerializerFactory(type, apiOptions.body);
+  const adapterOpts = i.assign(apiOptions, {
+    mode: apiOptions.crossOrigin ? 'cors' : 'same-origin',
+    body: serializer.serialize()
+  });
+  return window.fetch(url, adapterOpts)
+    .then(response =>
+      response[type]().then(respData => {
+        if(response.ok) {
+          nextWithAction({
+            type: successType,
+            response: {
+              data: SerializerFactory(type, respData).deserialize(),
+              status: response.status
+            }
+          });
+        }
+        else {
+          const data = camelizeKeys(respData);
+          nextWithAction({
+            type: failureType,
+            error: data.message,
+            response: {data, status: response.status}
+          });
+        }
+      })
+    ).catch(err => error(err.stack));
+};

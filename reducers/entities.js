@@ -1,27 +1,28 @@
 import i from 'icepick';
-import { transform, cloneDeep, uniq } from 'lodash';
+import { transform, cloneDeep, uniq, reduce } from 'lodash';
 import { handleActions } from 'redux-actions';
 
 import { Sound } from 'app/models';
+import { extractEntities } from 'app/util/json-api-helpers';
 import schema from 'app/store/schema';
 import { PLAY_SOUND } from 'app/constants';
 
-const INITIAL_STATE = {
-  soundIds: [],
-  Board: {
-    itemsById: {},
-    items: []
+const INITIAL_STATE = reduce([
+    'Board',
+    'Config',
+    'DJ',
+    'Key',
+    'Shortcut',
+    'ShortcutCommand',
+    'Sound',
+    'Session'
+  ],
+  (acc, entityType) => {
+    acc[entityType] = {itemsById: {}, items: []};
+    return acc;
   },
-  Config: {},
-  DJ: {
-    itemsById: {},
-    items: []
-  },
-  Key: {},
-  Shortcut: {},
-  ShortcutCommand: {},
-  Sound: {}
-};
+  {}
+);
 
 function playSoundHandler(state, action) {
   const id = action.payload;
@@ -32,14 +33,16 @@ function playSoundHandler(state, action) {
 
 export default function(state = INITIAL_STATE, action) {
   let newState = cloneDeep(state);
-  const entities = action.response && action.response.entities;
+  const entities = action.response && extractEntities(action.response.data);
   if(entities) {
-    newState = transform(entities, (modEntities, idMap, entityType) =>
-      modEntities[entityType] = {
+    const newItems = transform(entities, (modEntities, idMap, entityType) => {
+      entityType = entityType.charAt(0).toUpperCase() + entityType.slice(1);
+      return modEntities[entityType] = {
         itemsById: i.merge(newState[entityType].itemsById, idMap),
         items: uniq(Object.keys(idMap).concat(newState[entityType].items))
-      }
-    );
+      };
+    });
+    newState = i.merge(newState, newItems);
   }
 
   newState = handleActions({

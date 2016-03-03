@@ -1,1 +1,1 @@
-<ReactRedux.Provider store={context.store}><App /></ReactRedux.Provider>
+<ReactRedux.Provider store={context.store}><Board /></ReactRedux.Provider>

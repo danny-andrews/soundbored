@@ -7,15 +7,12 @@ import subject from 'app/reducers/entities';
 import { ActionFac, SoundFac } from 'test/factories';
 
 function actionResponseFactory(entitiesHash = {}) {
-  return {response: {entities: entitiesHash}};
+  return {response: entitiesHash};
 }
 
 function stateFactory(state) {
   state = transform(state, (newState, idMap, entityType) =>
-    newState[entityType] = {
-      itemsById: idMap,
-      items: Object.keys(idMap)
-    }
+    newState[entityType] = {itemsById: idMap, items: Object.keys(idMap)}
   );
   schema.from(state);
   return state;
@@ -63,15 +60,15 @@ describe('Reducer - entities', function() {
         }
       })
     );
-    expect(newState.items.itemsById).toEqual({
+    expect(newState.Items.itemsById).toEqual({
       1: {id: 1, name: 'hat'},
       2: {id: 2, name: 'shoes'}
     });
-    expect(newState.items.items.sort()).toEqual(['1', '2']);
-    expect(newState.customers.itemsById).toEqual({
+    expect(newState.Items.items.sort()).toEqual(['1', '2']);
+    expect(newState.Customers.itemsById).toEqual({
       4: {id: 4, name: 'Marcus'}
     });
-    expect(newState.customers.items).toEqual(['4']);
+    expect(newState.Customers.items).toEqual(['4']);
   });
 
   it('overwrites existing state with api action response data', function() {
@@ -86,10 +83,10 @@ describe('Reducer - entities', function() {
         }
       })
     );
-    expect(newState.items.itemsById).toEqual({
+    expect(newState.Items.itemsById).toEqual({
       1: {id: 1, name: 'cap'}
     });
-    expect(newState.items.items).toEqual(['1']);
+    expect(newState.Items.items).toEqual(['1']);
   });
 
   it('merges existing state with api action response data', function() {
@@ -105,10 +102,29 @@ describe('Reducer - entities', function() {
         }
       })
     );
-    expect(newState.items.itemsById).toEqual({
+    expect(newState.Items.itemsById).toEqual({
       1: {id: 1, name: 'hat', price: 300}
     });
-    expect(newState.items.items).toEqual(['1']);
+    expect(newState.Items.items).toEqual(['1']);
+  });
+
+  it('capitalizes entity type', function() {
+    const newState = subject(
+      stateFactory({
+        items: {
+          1: {id: 1, name: 'hat'}
+        }
+      }),
+      actionResponseFactory({
+        items: {
+          1: {id: 1, price: 300}
+        }
+      })
+    );
+    expect(newState.Items.itemsById).toEqual({
+      1: {id: 1, name: 'hat', price: 300}
+    });
+    expect(newState.Items.items).toEqual(['1']);
   });
 
   context('action.type === PLAY_SOUND', function() {

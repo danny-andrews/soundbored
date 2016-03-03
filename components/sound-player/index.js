@@ -4,14 +4,18 @@ import React from 'react';
 import templ from './sound-player.jsx';
 
 export default React.createClass({
-  getInitialState() {
-    const shortcutKey = this.props.sound.shortcut ?
+  getUpdatedState(nextProps = undefined) {
+    const props = nextProps || this.props;
+    const shortcutKey = props.sound.shortcut ?
       ` (${this.props.sound.shortcut.key.code})` :
       '';
-    return i.assign(this.props, {
-      playSound: this.playSound,
-      shortcutKey
-    });
+    return i.assign(props, {playSound: this.playSound, shortcutKey});
+  },
+  getInitialState() {
+    return this.getUpdatedState();
+  },
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.getUpdatedState(nextProps));
   },
   render() {
     return templ(this.state);

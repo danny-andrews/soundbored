@@ -4,35 +4,104 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { SHORTCUT_ACTIONS } from 'app/constants';
-import { Key, Shortcut, ShortcutCommand } from 'app/models';
-import { sounds as soundsSelector, soundPlayersSelector }
+import { Key } from 'app/models';
+import { sounds as soundsSelector, soundPlayersSelector, killSoundsShortcutSelector }
   from 'app/store/selectors';
-import { playSound, killAllSounds, keyPress } from 'app/actions';
+import * as actions from 'app/actions';
 import templ from './board.jsx';
+import loadingTempl from 'app/components/loading/loading.jsx';
 
 function mapStateToProps(state) {
-  return {entities: state.entities, previousAction: state.previousAction};
+  return {
+    entities: state.entities,
+    previousAction: state.previousAction,
+    session: state.entities.Session.itemsById[1],
+    keys: state.entities.Key.items,
+    shortcutCommands: state.entities.ShortcutCommand.items,
+    boards: state.entities.Board.items,
+    sounds: state.entities.Sound.items,
+    shortcuts: state.entities.Shortcut.items
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({playSound, killAllSounds, keyPress}, dispatch);
+  return bindActionCreators({
+    playSound: actions.playSound,
+    killAllSounds: actions.killAllSounds,
+    keyPress: actions.keyPress,
+    authenticate: actions.authenticate,
+    getKeys: actions.getKeys,
+    getBoards: actions.getBoards,
+    assignShortcutKeys: actions.assignShortcutKeys,
+    getBoardSounds: actions.getBoardSounds,
+    getShortcutCommands: actions.getShortcutCommands
+  }, dispatch);
 }
+
+let shortcutsAssigned = false;
+let retrievedSounds = false;
+let retrievedKeys = false;
+let retrievedShortcutCommands = false;
+let retrievedBoards = false;
 
 const Board = React.createClass({
   componentDidMount() {
+    this.props.authenticate({auid: 'dsahi', name: 'Bob'});
     document.addEventListener('keypress', this.routeKeyCode);
   },
   componentWillUnmount() {
     document.removeEventListener('keypress', this.routeKeyCode);
   },
-  setupState() {
-    const {entities, previousAction} = this.props;
-    const killSoundsCommand = ShortcutCommand.get({
-      name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS
-    });
-    const killSoundsShortcut = Shortcut.get({
-      shortcutCommand: killSoundsCommand.id
-    });
+  getUpdatedState(nextProps = undefined) {
+    const {
+      entities,
+      previousAction,
+      session,
+      keys,
+      boards,
+      sounds,
+      shortcutCommands,
+      shortcuts
+    } = nextProps || this.props;
+    if(!session) {
+      return {};
+    }
+    if(keys.length === 0) {
+      if(!retrievedKeys) {
+        this.props.getKeys({});
+        retrievedKeys = true;
+      }
+      return {};
+    }
+    if(shortcutCommands.length === 0) {
+      if(!retrievedShortcutCommands) {
+        this.props.getShortcutCommands({});
+        retrievedShortcutCommands = true;
+      }
+      return {};
+    }
+    if(boards.length === 0) {
+      if(!retrievedBoards) {
+        this.props.getBoards({});
+        retrievedBoards = true;
+      }
+      return {};
+    }
+    if(sounds.length === 0) {
+      if(!retrievedSounds) {
+        this.props.getBoardSounds(boards[0]);
+        retrievedSounds = true;
+      }
+      return {};
+    }
+    if(shortcuts.length === 0) {
+      if(!shortcutsAssigned) {
+        this.props.assignShortcutKeys({});
+        shortcutsAssigned = true;
+      }
+      return {};
+    }
+    const killSoundsShortcut = killSoundsShortcutSelector(entities);
     const killSoundsKey = killSoundsShortcut ?
       ` (${killSoundsShortcut.key.code})` :
       '';
@@ -43,17 +112,23 @@ const Board = React.createClass({
       killAllSounds: this.killAllSounds,
       sounds: soundArray,
       previousAction,
+      session,
       killSoundsKey
     };
   },
   getInitialState() {
-    return this.setupState();
+    return this.getUpdatedState();
   },
-  componentWillReceiveProps() {
-    this.setupState();
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.getUpdatedState(nextProps));
   },
   render() {
-    return templ(this.state);
+    if(this.state.session) {
+      return templ(this.state);
+    }
+    else {
+      return loadingTempl();
+    }
   },
   propTypes: {
     playSound: PropTypes.func.isRequired
@@ -63,7 +138,7 @@ const Board = React.createClass({
   },
   keyPress(keyCode) {
     const key = Key.get({code: keyCode});
-    const shortcut = key.shortcuts[0];
+    const shortcut = key.shortcuts.first();
     if(!shortcut) {
       return;
     }

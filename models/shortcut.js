@@ -10,9 +10,15 @@ function assignShortcutKeysHandler(session) {
   const playSoundCommandId = session.ShortcutCommand.get({
     name: SHORTCUT_ACTIONS.PLAY_SOUND
   }).id;
-  const configId = session.Config.ref.first().id;
+  const killSoundsCommandId = session.ShortcutCommand.get({
+    name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS
+  }).id;
+  session.Shortcut.create({
+    key: '1',
+    shortcutCommand: killSoundsCommandId
+  });
   const totalKeys = session.Key.withRefs.map(key => key.id);
-  const usedKeys = session.Shortcut.withRefs.map(sc => sc.keyId);
+  const usedKeys = session.Shortcut.withRefs.map(sc => sc.keyId).concat('1');
   const freeKeys = difference(totalKeys, usedKeys);
   const totalSoundIds = session.Sound.withRefs.map(sound => sound.id);
   const usedSoundIds = chain(session.Shortcut.withRefs)
@@ -27,7 +33,6 @@ function assignShortcutKeysHandler(session) {
     .forEach(pair =>
       session.Shortcut.create({
         key: pair[1],
-        config: configId,
         shortcutCommand: playSoundCommandId,
         sound: pair[0]
       })

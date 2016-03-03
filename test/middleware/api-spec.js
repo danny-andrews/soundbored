@@ -1,25 +1,14 @@
 import expect from 'expect';
 import stubber from 'fetch-mock';
-import { has } from 'lodash';
-import { Schema } from 'normalizr';
 
 import middleware, { CALL_API } from 'app/middleware/api';
 import { ab2str } from 'app/util/audio-helpers';
 import { ApiActionFac } from 'test/factories';
 
-const fakeSchema = new Schema('fakes');
-
 function subject(spec = {}) {
-  let {action} = spec;
-  const {
-    nextFunc: nextFunc = () => {},
-    supportedSchemas: supportedSchemas = [fakeSchema]
-  } = spec;
-  const {payload: {[CALL_API]: apiOpts}} = action;
-  if(apiOpts && (!has(apiOpts, 'schema') || apiOpts.schema)) {
-    action.payload[CALL_API].schema = fakeSchema;
-  }
-  return middleware({supportedSchemas})()(nextFunc)(action);
+  const {action, nextFunc: nextFunc = () => {}} = spec;
+
+  return middleware()(nextFunc)(action);
 }
 
 describe('Middleware - api', function() {
@@ -44,13 +33,6 @@ describe('Middleware - api', function() {
       let actual = subject({nextFunc: () => 4, action: this.fakeAction});
       expect(actual).toBe(4);
     });
-  });
-
-  it('throws error when schema is undefined', function() {
-    let fakeAction = ApiActionFac.build({
-      [CALL_API]: {schema: undefined}
-    });
-    expect(() => subject({action: fakeAction})).toThrow(/schemas/i);
   });
 
   it('throws error when url is not a string', function() {
@@ -118,8 +100,7 @@ describe('Middleware - api', function() {
         const respData = action.response.data;
         expect(action.type).toBe('SUCCESS');
         expect(action.response.status).toBe(200);
-        expect(respData.result).toBe(30);
-        expect(respData.entities.fakes[30]).toEqual({id: 30, message: 'hi'});
+        expect(respData).toEqual({id: 30, message: 'hi'});
       });
     });
   });
@@ -165,7 +146,7 @@ describe('Middleware - api', function() {
       return subject({nextFunc: spy, action: fakeAction}).then(() => {
         const action = spy.calls[1].arguments[0];
         const respData = action.response.data;
-        const blob = respData.entities.fakes[undefined].blob;
+        const blob = respData.blob;
         expect(blob).toExist();
         expect(ab2str(blob)).toBe('I am binary data: 000111');
       });

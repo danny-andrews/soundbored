@@ -40,7 +40,8 @@ module.exports = function(grunt) {
         port: '<%= port %>'
       },
       demo: {webpack: webpackConfigDemo, port: '<%= demo_port %>'},
-      test: {webpack: webpackConfigtest, contentBase: 'test'}
+      test: {webpack: webpackConfigtest, contentBase: 'test'},
+      prod: {webpack: webpackConfigProd}
     },
     webpack: {
       dist: webpackConfigProd,

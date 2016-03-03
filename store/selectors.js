@@ -1,6 +1,7 @@
 import { createSelector, defaultMemoize } from 'reselect';
 import { reduce } from 'lodash';
 
+import { SHORTCUT_ACTIONS } from 'app/constants';
 import config from 'app/util/config';
 import SoundPlayerFactory from 'app/util/sound-player-factory';
 import schema from 'app/store/schema';
@@ -11,6 +12,14 @@ function soundPath(filename) {
 
 export const sounds = schema.createSelector(session =>
   session.Sound.all().toModelArray()
+);
+
+export const shortcuts = schema.createSelector(session =>
+  session.Shortcut.all().toModelArray()
+);
+
+export const shortcutCommands = schema.createSelector(session =>
+  session.shortcutCommands.all().toModelArray()
 );
 
 export const soundPlayersSelector = createSelector(
@@ -25,4 +34,15 @@ export const soundPlayersSelector = createSelector(
         sound.id === b[index].id && sound.filename === b[index].filename
       )
   )
+);
+
+export const killSoundsShortcutCommand = schema.createSelector(session =>
+  session.ShortcutCommand.get({name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS})
+);
+
+export const killSoundsShortcutSelector = createSelector(
+  shortcuts,
+  killSoundsShortcutCommand,
+  (shortcuts, killSoundsCommand) =>
+      shortcuts.filter(sc => sc.shortcutCommand.id === killSoundsCommand.id)[0]
 );

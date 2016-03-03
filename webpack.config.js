@@ -19,11 +19,12 @@ module.exports = i.merge(webpackConfigBase, {
   plugins: webpackConfigBase.plugins.concat(
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(
-        i.assign(webpackConfigBase.configVals, {NODE_ENV: 'production'})
+        i.assign(webpackConfigBase.configVals, {
+          NODE_ENV: 'production',
+          ASSET_PATH: ''
+        })
       )
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: false
     })
-  )
+  ),
+  devtool: 'none'
 });
