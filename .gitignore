@@ -1,4 +1,4 @@
 node_modules
-dist
 containers/dev-tools/selector.js
 test/public/sounds
+test/dist/
