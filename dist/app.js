@@ -29679,14 +29679,12 @@ webpackJsonp([0],[
 	    return Promise.resolve({
 	      start: function start() {
 	        activePlayers = _icepick2.default.push(activePlayers, this);
-
-	        var _pool$busy = pool.busy();
-
-	        var tag = _pool$busy.tag;
-
-	        tag.play();
+	        this.tag = pool.busy().tag;
+	        this.tag.play();
 	      },
-	      stop: function stop() {}
+	      stop: function stop() {
+	        this.tag.pause();
+	      }
 	    });
 	  }
 	  function stopAll() {
