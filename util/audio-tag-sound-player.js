@@ -38,10 +38,12 @@ export default function AudioTagSoundPlayer(filepath) {
     return Promise.resolve({
       start() {
         activePlayers = i.push(activePlayers, this);
-        const {tag} = pool.busy();
-        tag.play();
+        this.tag = pool.busy().tag;
+        this.tag.play();
       },
-      stop() {}
+      stop() {
+        this.tag.pause();
+      }
     });
   }
   function stopAll() {
