@@ -695,6 +695,8 @@ webpackJsonp([0],[
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -716,6 +718,13 @@ webpackJsonp([0],[
 
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Key).apply(this, arguments));
 	  }
+
+	  _createClass(Key, [{
+	    key: 'displayCode',
+	    value: function displayCode() {
+	      return this.code.slice(0, 3) + ' ' + this.code.charAt(3);
+	    }
+	  }]);
 
 	  return Key;
 	}(_reduxOrm.Model);
@@ -29276,7 +29285,7 @@ webpackJsonp([0],[
 	      return {};
 	    }
 	    var killSoundsShortcut = (0, _selectors.killSoundsShortcutSelector)(entities);
-	    var killSoundsKey = killSoundsShortcut ? ' (' + killSoundsShortcut.key.code + ')' : '';
+	    var killSoundsKey = killSoundsShortcut ? ' (' + killSoundsShortcut.key.displayCode() + ')' : '';
 	    var soundArray = (0, _selectors.sounds)(entities);
 	    this.soundPlayers = (0, _selectors.soundPlayersSelector)(entities);
 	    return {
@@ -29946,7 +29955,7 @@ webpackJsonp([0],[
 	    var nextProps = arguments.length <= 0 || arguments[0] === undefined ? undefined : arguments[0];
 
 	    var props = nextProps || this.props;
-	    var shortcutKey = props.sound.shortcut ? ' (' + this.props.sound.shortcut.key.code + ')' : '';
+	    var shortcutKey = props.sound.shortcut ? ' (' + this.props.sound.shortcut.key.displayCode() + ')' : '';
 	    return _icepick2.default.assign(props, { playSound: this.playSound, shortcutKey: shortcutKey });
 	  },
 	  getInitialState: function getInitialState() {
