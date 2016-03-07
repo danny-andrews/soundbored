@@ -7,7 +7,7 @@ export default React.createClass({
   getUpdatedState(nextProps = undefined) {
     const props = nextProps || this.props;
     const shortcutKey = props.sound.shortcut ?
-      ` (${this.props.sound.shortcut.key.code})` :
+      ` (${this.props.sound.shortcut.key.displayCode()})` :
       '';
     return i.assign(props, {playSound: this.playSound, shortcutKey});
   },

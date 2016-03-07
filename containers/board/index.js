@@ -103,7 +103,7 @@ const Board = React.createClass({
     }
     const killSoundsShortcut = killSoundsShortcutSelector(entities);
     const killSoundsKey = killSoundsShortcut ?
-      ` (${killSoundsShortcut.key.code})` :
+      ` (${killSoundsShortcut.key.displayCode()})` :
       '';
     const soundArray = soundsSelector(entities);
     this.soundPlayers = soundPlayersSelector(entities);
