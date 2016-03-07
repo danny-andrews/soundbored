@@ -29130,7 +29130,7 @@ webpackJsonp([0],[
 	if (_config2.default.inProd()) {
 	  module.exports = __webpack_require__(868);
 	} else {
-	  module.exports = __webpack_require__(883);
+	  module.exports = __webpack_require__(884);
 	}
 
 /***/ },
@@ -29175,15 +29175,15 @@ webpackJsonp([0],[
 
 	var _selectors = __webpack_require__(870);
 
-	var _actions = __webpack_require__(875);
+	var _actions = __webpack_require__(876);
 
 	var actions = _interopRequireWildcard(_actions);
 
-	var _board = __webpack_require__(879);
+	var _board = __webpack_require__(880);
 
 	var _board2 = _interopRequireDefault(_board);
 
-	var _loading = __webpack_require__(882);
+	var _loading = __webpack_require__(883);
 
 	var _loading2 = _interopRequireDefault(_loading);
 
@@ -29630,24 +29630,61 @@ webpackJsonp([0],[
 
 	var _icepick2 = _interopRequireDefault(_icepick);
 
+	var _lodash = __webpack_require__(299);
+
+	var _resourcePool = __webpack_require__(875);
+
+	var _resourcePool2 = _interopRequireDefault(_resourcePool);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var POOL_SIZE = 10;
 
 	function AudioTagSoundPlayer(filepath) {
 	  var activePlayers = _icepick2.default.freeze([]);
+	  var pool = undefined;
 
 	  function soundLoaded() {
 	    return Boolean(AudioTagSoundPlayer.audioCache[filepath]);
 	  }
 
 	  function setup() {
-	    AudioTagSoundPlayer.audioCache = _icepick2.default.set(AudioTagSoundPlayer.audioCache, filepath, 'fake');
-	    return Promise.resolve(this);
+	    var _this = this;
+
+	    var resourcePromises = (0, _lodash.range)(POOL_SIZE - 1).map(function (num) {
+	      var tag = document.createElement('audio');
+	      return new Promise(function (resolve) {
+	        tag.onloadeddata = function () {
+	          return resolve({ id: num, tag: tag });
+	        };
+	        tag.src = filepath;
+	      });
+	    });
+	    return Promise.all(resourcePromises).then(function (resources) {
+	      pool = (0, _resourcePool2.default)(resources);
+	      resources.forEach(function (_ref) {
+	        var id = _ref.id;
+	        var tag = _ref.tag;
+
+	        tag.onended = function () {
+	          return pool.free(id);
+	        };
+	      });
+	      AudioTagSoundPlayer.audioCache = _icepick2.default.set(AudioTagSoundPlayer.audioCache, filepath, 'fake');
+	      return _this;
+	    });
 	  }
 	  function load() {
 	    (0, _argAssert2.default)(soundLoaded(), 'You must call "setup" before calling "load" on ' + 'a Sound instance');
 	    return Promise.resolve({
 	      start: function start() {
 	        activePlayers = _icepick2.default.push(activePlayers, this);
+
+	        var _pool$busy = pool.busy();
+
+	        var tag = _pool$busy.tag;
+
+	        tag.play();
 	      },
 	      stop: function stop() {}
 	    });
@@ -29680,7 +29717,57 @@ webpackJsonp([0],[
 	  value: true
 	});
 
-	var _api = __webpack_require__(876);
+	exports.default = function (resources) {
+	  (0, _argAssert2.default)(Array.isArray(resources) && resources.length > 0 && resources.every(function (resource) {
+	    return resource.hasOwnProperty('id');
+	  }), '"resources" param must be an array with length > 0 of elements with an ' + '"id" property');
+
+	  var availableQueue = _icepick2.default.freeze(resources);
+	  var busyMap = _icepick2.default.freeze({});
+
+	  function hasFreeResource() {
+	    return availableQueue.length > 0;
+	  }
+	  function busy() {
+	    (0, _argAssert2.default)(hasFreeResource(), 'No available resources');
+	    var lastEl = availableQueue[0];
+	    busyMap = _icepick2.default.set(busyMap, lastEl.id, lastEl);
+	    availableQueue = _icepick2.default.shift(availableQueue);
+	    return lastEl;
+	  }
+	  function free(id) {
+	    var itemToFree = busyMap[id];
+	    (0, _argAssert2.default)(itemToFree, 'Invalid value ' + id + ' given for "id"');
+	    busyMap = _icepick2.default.unset(busyMap, id);
+	    availableQueue = _icepick2.default.push(availableQueue, itemToFree);
+	  }
+
+	  return Object.freeze({ busy: busy, free: free, hasFreeResource: hasFreeResource });
+	};
+
+	var _argAssert = __webpack_require__(427);
+
+	var _argAssert2 = _interopRequireDefault(_argAssert);
+
+	var _icepick = __webpack_require__(305);
+
+	var _icepick2 = _interopRequireDefault(_icepick);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 876 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _api = __webpack_require__(877);
 
 	var _loop = function _loop(_key4) {
 	  if (_key4 === "default") return 'continue';
@@ -29698,7 +29785,7 @@ webpackJsonp([0],[
 	  if (_ret === 'continue') continue;
 	}
 
-	var _board = __webpack_require__(877);
+	var _board = __webpack_require__(878);
 
 	var _loop2 = function _loop2(_key5) {
 	  if (_key5 === "default") return 'continue';
@@ -29716,7 +29803,7 @@ webpackJsonp([0],[
 	  if (_ret2 === 'continue') continue;
 	}
 
-	var _models = __webpack_require__(878);
+	var _models = __webpack_require__(879);
 
 	var _loop3 = function _loop3(_key6) {
 	  if (_key6 === "default") return 'continue';
@@ -29735,7 +29822,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 876 */
+/* 877 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29858,7 +29945,7 @@ webpackJsonp([0],[
 	};
 
 /***/ },
-/* 877 */
+/* 878 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29877,7 +29964,7 @@ webpackJsonp([0],[
 	var keyPress = exports.keyPress = (0, _reduxActions.createAction)(_constants.KEY_PRESS);
 
 /***/ },
-/* 878 */
+/* 879 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29894,7 +29981,7 @@ webpackJsonp([0],[
 	var assignShortcutKeys = exports.assignShortcutKeys = (0, _reduxActions.createAction)(_actionTypes.ASSIGN_SHORTCUT_KEYS);
 
 /***/ },
-/* 879 */
+/* 880 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(SoundPlayer) {'use strict';
@@ -29924,10 +30011,10 @@ webpackJsonp([0],[
 	    )
 	  );
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(880)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(881)))
 
 /***/ },
-/* 880 */
+/* 881 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29944,7 +30031,7 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _soundPlayer = __webpack_require__(881);
+	var _soundPlayer = __webpack_require__(882);
 
 	var _soundPlayer2 = _interopRequireDefault(_soundPlayer);
 
@@ -29974,7 +30061,7 @@ webpackJsonp([0],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 881 */
+/* 882 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29994,7 +30081,7 @@ webpackJsonp([0],[
 	};
 
 /***/ },
-/* 882 */
+/* 883 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30009,7 +30096,7 @@ webpackJsonp([0],[
 	};
 
 /***/ },
-/* 883 */
+/* 884 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(ReactRedux, Board, DevTools) {'use strict';
