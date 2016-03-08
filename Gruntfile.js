@@ -23,9 +23,15 @@ module.exports = function(grunt) {
       hostname: '<%= hostname %>',
       port: '<%= port %>'
     }),
+    demo_url: url.format({
+      protocol: 'http',
+      hostname: '<%= hostname %>',
+      port: '<%= demo_port %>'
+    }),
 
     open: {
-      webpack: {path: '<%= url %>/index.html'}
+      demo: {path: '<%= demo_url %>/index.html'},
+      test: {path: '<%= url %>/index.html'}
     },
     jscs: {all: JS_GLOBS},
     jshint: {
@@ -60,16 +66,16 @@ module.exports = function(grunt) {
   grunt.registerTask('test', 'Run tests.', ['compile:test', 'mochaTest']);
   grunt.registerTask('ci', 'Run lints and tests.', ['lint', 'test']);
   grunt.registerTask('serve', 'Serve code.', function(env) {
-    grunt.task.run('open:webpack', 'webpack-dev-server:' + env);
+    grunt.task.run('open:' + env, 'webpack-dev-server:' + env);
   });
   grunt.registerTask(
     'demo',
     'Run the demo page in your browser.',
-    ['open:webpack:demo', 'webpack-dev-server:demo']
+    ['open:demo', 'webpack-dev-server:demo']
   );
   grunt.registerTask('compile', 'Compile code.', function(env) {
     grunt.task.run('webpack:' + env);
   });
 
-  grunt.registerTask('default', 'serve');
+  grunt.registerTask('default', 'demo');
 };

@@ -29,19 +29,15 @@ function mapDispatchToProps(dispatch) {
     killAllSounds: actions.killAllSounds,
     keyPress: actions.keyPress,
     authenticate: actions.authenticate,
-    getKeys: actions.getKeys,
-    getBoards: actions.getBoards,
+    loadKeys: actions.loadKeys,
+    loadBoards: actions.loadBoards,
     assignShortcutKeys: actions.assignShortcutKeys,
-    getBoardSounds: actions.getBoardSounds,
-    getShortcutCommands: actions.getShortcutCommands
+    loadBoardSounds: actions.loadBoardSounds,
+    loadShortcutCommands: actions.loadShortcutCommands
   }, dispatch);
 }
 
 let shortcutsAssigned = false;
-let retrievedSounds = false;
-let retrievedKeys = false;
-let retrievedShortcutCommands = false;
-let retrievedBoards = false;
 
 const Board = React.createClass({
   componentDidMount() {
@@ -52,59 +48,33 @@ const Board = React.createClass({
     document.removeEventListener('keypress', this.routeKeyCode);
   },
   getUpdatedState(nextProps = undefined) {
-    const {
-      entities,
-      previousAction,
-      session,
-      keys,
-      boards,
-      sounds,
-      shortcutCommands,
-      shortcuts
-    } = nextProps || this.props;
-    if(!session) {
+    const {entities, previousAction, session} = nextProps || this.props;
+    const boards = selectors.boards(entities).toRefArray();
+    if(!selectors.session(entities)) {
       return {};
     }
-    if(keys.length === 0) {
-      if(!retrievedKeys) {
-        this.props.getKeys({});
-        retrievedKeys = true;
-      }
+    this.props.loadKeys({});
+    this.props.loadShortcutCommands({});
+    this.props.loadBoards({});
+    if(selectors.keys(entities).toRefArray().length === 0 ||
+        selectors.shortcutCommands(entities).toRefArray().length === 0 ||
+        boards.length === 0) {
       return {};
     }
-    if(shortcutCommands.length === 0) {
-      if(!retrievedShortcutCommands) {
-        this.props.getShortcutCommands({});
-        retrievedShortcutCommands = true;
-      }
+    this.props.loadBoardSounds(boards[0].id);
+    if(selectors.sounds(entities).toRefArray().length === 0 ||
+        selectors.shortcuts(entities).toRefArray().length === 0) {
       return {};
     }
-    if(boards.length === 0) {
-      if(!retrievedBoards) {
-        this.props.getBoards({});
-        retrievedBoards = true;
-      }
-      return {};
-    }
-    if(sounds.length === 0) {
-      if(!retrievedSounds) {
-        this.props.getBoardSounds(boards[0]);
-        retrievedSounds = true;
-      }
-      return {};
-    }
-    if(shortcuts.length === 0) {
-      if(!shortcutsAssigned) {
-        this.props.assignShortcutKeys({});
-        shortcutsAssigned = true;
-      }
-      return {};
+    if(!shortcutsAssigned) {
+      this.props.assignShortcutKeys({});
+      shortcutsAssigned = true;
     }
     const killSoundsShortcut = selectors.killSoundsShortcut(entities);
     const killSoundsKey = killSoundsShortcut ?
       ` (${killSoundsShortcut.key.displayCode()})` :
       '';
-    const soundArray = selectors.sounds(entities);
+    const soundArray = selectors.sounds(entities).toModelArray();
     this.soundPlayers = selectors.soundPlayers(entities);
     return {
       playSound: this.playSound,
@@ -137,7 +107,7 @@ const Board = React.createClass({
   },
   keyPress(keyCode) {
     const key = Key.get({code: keyCode});
-    const shortcut = key.shortcuts.first();
+    const shortcut = key.shortcuts.toModelArray()[0];
     if(!shortcut) {
       return;
     }

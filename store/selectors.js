@@ -10,20 +10,34 @@ function soundPath(filename) {
   return [config.get('ASSET_PATH'), 'sounds', filename].join('/');
 }
 
+export const session = schema.createSelector(session =>
+  session.Session.all().toModelArray()[0]
+);
+
 export const sounds = schema.createSelector(session =>
-  session.Sound.all().toModelArray()
+  session.Sound.all()
+);
+
+export const boards = schema.createSelector(session =>
+  session.Board.all()
+);
+
+export const keys = schema.createSelector(session =>
+  session.Key.all()
 );
 
 export const shortcuts = schema.createSelector(session =>
-  session.Shortcut.all().toModelArray()
+  session.Shortcut.all()
 );
 
 export const shortcutCommands = schema.createSelector(session =>
-  session.shortcutCommands.all().toModelArray()
+  session.ShortcutCommand.all()
 );
 
+const soundRefs = createSelector(sounds, sounds => sounds.toRefArray());
+
 export const soundPlayers = createSelector(
-  sounds,
+  soundRefs,
   defaultMemoize(
     sounds => reduce(sounds, (acc, sound) => {
       acc[sound.id] = SoundPlayerFactory(soundPath(sound.filename)).setup();
