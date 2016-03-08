@@ -22,7 +22,7 @@ export const shortcutCommands = schema.createSelector(session =>
   session.shortcutCommands.all().toModelArray()
 );
 
-export const soundPlayersSelector = createSelector(
+export const soundPlayers = createSelector(
   sounds,
   defaultMemoize(
     sounds => reduce(sounds, (acc, sound) => {
@@ -40,7 +40,7 @@ export const killSoundsShortcutCommand = schema.createSelector(session =>
   session.ShortcutCommand.get({name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS})
 );
 
-export const killSoundsShortcutSelector = createSelector(
+export const killSoundsShortcut = createSelector(
   shortcuts,
   killSoundsShortcutCommand,
   (shortcuts, killSoundsCommand) =>

@@ -15,7 +15,7 @@ const INITIAL_STATE = {entities: TEST_ENTITIES};
 const delay = config.inTest() ? 0 : 1000;
 
 const entitiesToJsonApiReponse = (entities, type) => entities.map(entity => ({
-  type: type,
+  type,
   id: entity.id,
   attributes: entity
 }));

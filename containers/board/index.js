@@ -5,8 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { SHORTCUT_ACTIONS } from 'app/constants';
 import { Key } from 'app/models';
-import { sounds as soundsSelector, soundPlayersSelector, killSoundsShortcutSelector }
-  from 'app/store/selectors';
+import * as selectors from 'app/store/selectors';
 import * as actions from 'app/actions';
 import templ from './board.jsx';
 import loadingTempl from 'app/components/loading/loading.jsx';
@@ -101,12 +100,12 @@ const Board = React.createClass({
       }
       return {};
     }
-    const killSoundsShortcut = killSoundsShortcutSelector(entities);
+    const killSoundsShortcut = selectors.killSoundsShortcut(entities);
     const killSoundsKey = killSoundsShortcut ?
       ` (${killSoundsShortcut.key.displayCode()})` :
       '';
-    const soundArray = soundsSelector(entities);
-    this.soundPlayers = soundPlayersSelector(entities);
+    const soundArray = selectors.sounds(entities);
+    this.soundPlayers = selectors.soundPlayers(entities);
     return {
       playSound: this.playSound,
       killAllSounds: this.killAllSounds,

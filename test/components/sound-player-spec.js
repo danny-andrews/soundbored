@@ -24,7 +24,7 @@ function Subject(props = {}) {
 }
 
 describe('Component - SoundPlayer', function() {
-  context('if sound has related shortcut', function() {
+  context('sound has related shortcut', function() {
     it('renders key code on play button', function() {
       const subject = Subject({
         sound: facs.SoundFac.build({
