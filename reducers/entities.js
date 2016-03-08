@@ -1,9 +1,9 @@
 import i from 'icepick';
-import { transform, cloneDeep, uniq, reduce } from 'lodash';
+import { reduce } from 'lodash';
 import { handleActions } from 'redux-actions';
+import infect from 'infect';
 
 import { Sound } from 'app/models';
-import { extractEntities } from 'app/util/json-api-helpers';
 import schema from 'app/store/schema';
 import { PLAY_SOUND } from 'app/constants';
 
@@ -31,18 +31,32 @@ function playSoundHandler(state, action) {
   return i.merge(state, {Sound: Sound.getNextState()});
 }
 
-export default function(state = INITIAL_STATE, action) {
-  let newState = cloneDeep(state);
-  const entities = action.response && extractEntities(action.response.data);
-  if(entities) {
-    const newItems = transform(entities, (modEntities, idMap, entityType) => {
-      entityType = entityType.charAt(0).toUpperCase() + entityType.slice(1);
-      return modEntities[entityType] = {
-        itemsById: i.merge(newState[entityType].itemsById, idMap),
-        items: uniq(Object.keys(idMap).concat(newState[entityType].items))
-      };
+export const entityMapToOrmData = map =>
+  reduce(map, (result, entities, entityType) => {
+    entityType = entityType.charAt(0).toUpperCase() + entityType.slice(1);
+    const idMap = entities.reduce(
+      (res, curValue) => i.set(res, curValue.id, curValue),
+      {}
+    );
+    return i.set(result, entityType, {
+      itemsById: idMap,
+      items: Object.keys(idMap)
     });
-    newState = i.merge(newState, newItems);
+  }, {});
+
+export default function(state = INITIAL_STATE, action) {
+  const transform = infect.get('ResponseDataTransformer');
+  let newState = state;
+  const entities = action.response && transform(action.response.data);
+  if(entities) {
+    newState = i.merge(newState, entityMapToOrmData(entities));
+    newState = reduce(newState, (acc, entity, entityType) => {
+      acc[entityType] = {
+        itemsById: entity.itemsById,
+        items: Object.keys(entity.itemsById)
+      };
+      return acc;
+    }, {});
   }
 
   newState = handleActions({

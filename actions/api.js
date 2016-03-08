@@ -33,7 +33,7 @@ const login = createAction(ATS.AUTHENTICATE_REQ, spec => {
 export const authenticate = spec =>
   (dispatch, getState) => {
     if(getToken(getState())) {
-      return null;
+      return undefined;
     }
     else {
       return dispatch(login(spec));
@@ -63,7 +63,7 @@ export const loadBoards = () =>
   (dispatch, getState) => {
     const boards = selectors.boards(getState().entities).toRefArray();
     if(boards.length > 0 || fetchingBoards) {
-      return null;
+      return undefined;
     }
     else {
       fetchingBoards = true;
@@ -94,7 +94,7 @@ export const loadKeys = () =>
   (dispatch, getState) => {
     const keys = selectors.keys(getState().entities).toRefArray();
     if(keys.length > 0 || fetchingKeys) {
-      return null;
+      return undefined;
     }
     else {
       fetchingKeys = true;
@@ -125,7 +125,7 @@ export const loadBoardSounds = boardId =>
   (dispatch, getState) => {
     const sounds = selectors.sounds(getState().entities).toRefArray();
     if(sounds.length > 0 || fetchingBoardSounds) {
-      return null;
+      return undefined;
     }
     else {
       fetchingBoardSounds = true;
@@ -157,7 +157,7 @@ export const loadShortcutCommands = () =>
     const shortcutCommands = selectors.shortcutCommands(getState().entities)
       .toRefArray();
     if(shortcutCommands.length > 0 || fetchingShortcutCommands) {
-      return null;
+      return undefined;
     }
     else {
       fetchingShortcutCommands = true;

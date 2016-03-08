@@ -3,29 +3,26 @@ import infect from 'infect';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import stubber from 'fetch-mock';
-import { merge } from 'icepick';
+import { assign } from 'icepick';
 
 import 'test/test-helper';
 import { PLAY_SOUND, KILL_ALL_SOUNDS }
   from 'app/constants/action-types';
+import { entityMapToOrmData } from 'app/reducers/entities';
 import SoundPlayer from 'app/components/sound-player';
 import Board from 'app/containers/board';
 import configureStore from 'app/store/configure-store';
-import { SoundFac, TEST_ENTITIES } from 'test/factories';
+import { SoundFac, TEST_VALS, TEST_DATA } from 'test/factories';
 
 describe('Containers - Board', function() {
   beforeEach(function() {
     this.sound1 = SoundFac.build({id: 1, displayName: 'Woof', playCount: 0});
     this.sound4 = SoundFac.build({id: 4, displayName: 'Meow'});
-    const storeEntities = merge(TEST_ENTITIES, {
-      Sound: {
-        itemsById: {
-          1: this.sound1,
-          4: this.sound4
-        },
-        items: ['1', '4']
-      }
-    });
+    const storeEntities = entityMapToOrmData(
+      assign(TEST_VALS, TEST_DATA, {
+        Sound: [this.sound1, this.sound4]
+      })
+    );
     this.store = configureStore({entities: storeEntities});
     infect.set('Store', this.store);
     stubber.mock(/wow/, {
@@ -78,7 +75,7 @@ describe('Containers - Board', function() {
     });
 
     it('has correct markup', function() {
-      expect(this.killswitch.children[0].innerHTML).toBe('stop');
+      expect(this.killswitch.children[0].innerHTML).toMatch(/stop/i);
     });
 
     it('dispatches KILL_ALL_SOUNDS action when clicked', function() {

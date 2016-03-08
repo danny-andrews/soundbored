@@ -4,6 +4,7 @@ export * from './boards';
 export * from './configs';
 export * from './djs';
 export * from './keys';
+export * from './sessions';
 export * from './shortcuts';
 export * from './shortcut-commands';
 export * from './sounds';

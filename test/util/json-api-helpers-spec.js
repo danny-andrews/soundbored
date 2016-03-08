@@ -12,7 +12,7 @@ describe('Util - json-api-helpers', () => {
         ]
       };
       expect(extractEntities(data)).toEqual({
-        thing: {3: {id: 3, firstName: 'Thing1'}}
+        thing: [{id: 3, firstName: 'Thing1'}]
       });
     });
 
@@ -22,7 +22,7 @@ describe('Util - json-api-helpers', () => {
         data: {type: 'thing', id: 3, attributes: {firstName: 'Thing1'}}
       };
       expect(extractEntities(data)).toEqual({
-        thing: {3: {id: 3, firstName: 'Thing1'}}
+        thing: [{id: 3, firstName: 'Thing1'}]
       });
     });
   });

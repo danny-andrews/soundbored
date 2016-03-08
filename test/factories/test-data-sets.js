@@ -1,6 +1,6 @@
-import { reduce, range } from 'lodash';
-import i from 'icepick';
+import { range } from 'lodash';
 
+import { entityMapToOrmData } from 'app/reducers/entities';
 import { SHORTCUT_ACTIONS } from 'app/constants';
 import config from 'app/util/config';
 import * as facs from './';
@@ -23,7 +23,7 @@ export const TEST_DATA = {
         displayName: filename.split('.')[0]
       })
     ) :
-    [],
+    facs.SoundFac.buildList(1),
   ShortcutCommand: [
     facs.ShortcutCommandFac.build({
       id: 1,
@@ -35,7 +35,8 @@ export const TEST_DATA = {
       shortcuts: [1],
       name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS
     })
-  ]
+  ],
+  Session: facs.SessionFac.buildList(1)
 };
 
 export const TEST_VALS = {
@@ -54,9 +55,4 @@ export const TEST_VALS = {
   Session: []
 };
 
-export const TEST_ENTITIES = reduce(TEST_VALS, (result, value, key) => {
-  const idMap = value.reduce((res, curValue) =>
-    i.set(res, curValue.id, curValue), {}
-  );
-  return i.set(result, key, {itemsById: idMap, items: Object.keys(idMap)});
-}, {});
+export const TEST_ENTITIES = entityMapToOrmData(TEST_VALS);

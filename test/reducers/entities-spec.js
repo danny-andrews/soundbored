@@ -1,19 +1,20 @@
 import expect from 'expect';
-import { transform } from 'lodash';
+import infect from 'infect';
 
+import 'test/test-helper';
 import schema from 'app/store/schema';
 import { playSound } from 'app/actions';
-import subject from 'app/reducers/entities';
+import subject, { entityMapToOrmData } from 'app/reducers/entities';
 import { ActionFac, SoundFac } from 'test/factories';
 
+infect.set('ResponseDataTransformer', f => f);
+
 function actionResponseFactory(entitiesHash = {}) {
-  return {response: entitiesHash};
+  return {response: {data: entitiesHash}};
 }
 
 function stateFactory(state) {
-  state = transform(state, (newState, idMap, entityType) =>
-    newState[entityType] = {itemsById: idMap, items: Object.keys(idMap)}
-  );
+  state = entityMapToOrmData(state);
   schema.from(state);
   return state;
 }
@@ -23,9 +24,7 @@ describe('Reducer - entities', function() {
     const newState = subject(
       undefined,
       actionResponseFactory({
-        DJ: {
-          2: {id: 2, name: 'shoes'}
-        }
+        DJ: [{id: 2, name: 'shoes'}]
       })
     );
     expect(newState.DJ.itemsById[2]).toExist();
@@ -46,18 +45,12 @@ describe('Reducer - entities', function() {
   it('adds new data returned in an api action response', function() {
     const newState = subject(
       stateFactory({
-        items: {
-          1: {id: 1, name: 'hat'}
-        },
-        customers: {}
+        items: [{id: 1, name: 'hat'}],
+        customers: []
       }),
       actionResponseFactory({
-        items: {
-          2: {id: 2, name: 'shoes'}
-        },
-        customers: {
-          4: {id: 4, name: 'Marcus'}
-        }
+        items: [{id: 2, name: 'shoes'}],
+        customers: [{id: 4, name: 'Marcus'}]
       })
     );
     expect(newState.Items.itemsById).toEqual({
@@ -74,13 +67,10 @@ describe('Reducer - entities', function() {
   it('overwrites existing state with api action response data', function() {
     const newState = subject(
       stateFactory({
-        items: {
-          1: {id: 1, name: 'hat'}
-        }
-      }), actionResponseFactory({
-        items: {
-          1: {id: 1, name: 'cap'}
-        }
+        items: [{id: 1, name: 'hat'}]
+      }),
+      actionResponseFactory({
+        items: [{id: 1, name: 'cap'}]
       })
     );
     expect(newState.Items.itemsById).toEqual({
@@ -92,14 +82,10 @@ describe('Reducer - entities', function() {
   it('merges existing state with api action response data', function() {
     const newState = subject(
       stateFactory({
-        items: {
-          1: {id: 1, name: 'hat'}
-        }
+        items: [{id: 1, name: 'hat'}]
       }),
       actionResponseFactory({
-        items: {
-          1: {id: 1, price: 300}
-        }
+        items: [{id: 1, price: 300}]
       })
     );
     expect(newState.Items.itemsById).toEqual({
@@ -111,14 +97,10 @@ describe('Reducer - entities', function() {
   it('capitalizes entity type', function() {
     const newState = subject(
       stateFactory({
-        items: {
-          1: {id: 1, name: 'hat'}
-        }
+        items: [{id: 1, name: 'hat'}]
       }),
       actionResponseFactory({
-        items: {
-          1: {id: 1, price: 300}
-        }
+        items: [{id: 1, price: 300}]
       })
     );
     expect(newState.Items.itemsById).toEqual({
@@ -130,9 +112,7 @@ describe('Reducer - entities', function() {
   context('action.type === PLAY_SOUND', function() {
     it('increases playCount of the played sound', function() {
       const state = stateFactory({
-        Sound: {
-          1: SoundFac.build({id: 1, playCount: 3})
-        }
+        Sound: [SoundFac.build({id: 1, playCount: 3})]
       });
       const newState = subject(state, playSound(1));
       const selectedSound = newState.Sound.itemsById[1];

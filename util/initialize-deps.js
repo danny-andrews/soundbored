@@ -1,6 +1,5 @@
 import infect from 'infect';
 
-import configureStore from 'app/store/configure-store';
+import { extractEntities } from 'app/util/json-api-helpers';
 
-const store = configureStore();
-infect.set('Store', store);
+infect.set('ResponseDataTransformer', extractEntities);

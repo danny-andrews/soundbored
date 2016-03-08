@@ -29,7 +29,7 @@ describe('Component - SoundPlayer', function() {
       const subject = Subject({
         sound: facs.SoundFac.build({
           shortcut: facs.ShortcutFac.build({
-            key: facs.KeyFac.build({code: 'KeyK'})
+            key: facs.KeyFac.build({code: 'KeyK', modelize: true})
           })
         })
       });

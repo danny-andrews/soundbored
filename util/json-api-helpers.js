@@ -7,9 +7,7 @@ export function extractEntities(data) {
     (acc, entity) => {
       const id = entity.id;
       const attributes = merge(entity.attributes, {id});
-      acc[entity.type] = acc[entity.type] ?
-        merge(acc[entity.type], {[id]: attributes})
-        : {[id]: attributes};
+      acc[entity.type] = (acc[entity.type] || []).concat(attributes);
       return acc;
     },
     {}
