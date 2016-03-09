@@ -21,7 +21,8 @@ const INITIAL_STATE = reduce([
     acc[entityType] = {
       itemsById: {},
       items: [],
-      haveBeenFetched: false
+      haveBeenFetched: false,
+      isFetching: false
     };
     return acc;
   },
@@ -35,25 +36,25 @@ function playSoundHandler(state, action) {
   return i.merge(state, {Sound: Sound.getNextState()});
 }
 
-function authenticateSuccessHandler(state) {
-  return i.merge(state, {Session: {haveBeenFetched: true}});
-}
+const successHandler = (state, type) =>
+  i.merge(state, {[type]: {haveBeenFetched: true}});
 
-function getBoardsSuccessHandler(state) {
-  return i.merge(state, {Board: {haveBeenFetched: true}});
-}
+const requestHandler = (state, type) =>
+  i.merge(state, {[type]: {isFetching: true}});
 
-function getBoardSoundsSuccessHandler(state) {
-  return i.merge(state, {Sound: {haveBeenFetched: true}});
-}
+const authenticateSuccessHandler = state => successHandler(state, 'Session');
+const getBoardsSuccessHandler = state => successHandler(state, 'Board');
+const getBoardSoundsSuccessHandler = state => successHandler(state, 'Sound');
+const getKeysSuccessHandler = state => successHandler(state, 'Key');
+const getShortcutCommandsSuccessHandler =
+  state => successHandler(state, 'ShortcutCommand');
 
-function getKeysSuccessHandler(state) {
-  return i.merge(state, {Key: {haveBeenFetched: true}});
-}
-
-function getShortcutCommandsHandler(state) {
-  return i.merge(state, {ShortcutCommand: {haveBeenFetched: true}});
-}
+const authenticateReqHandler = state => requestHandler(state, 'Session');
+const getBoardsReqHandler = state => requestHandler(state, 'Board');
+const getBoardSoundsReqHandler = state => requestHandler(state, 'Sound');
+const getKeysReqHandler = state => requestHandler(state, 'Key');
+const getShortcutCommandsReqHandler =
+  state => requestHandler(state, 'ShortcutCommand');
 
 export const entityMapToOrmData = map =>
   reduce(map, (result, entities, entityType) => {
@@ -87,7 +88,12 @@ export default function(state = INITIAL_STATE, action) {
     [ATS.GET_BOARDS_SUCCESS]: getBoardsSuccessHandler,
     [ATS.GET_BOARD_SOUNDS_SUCCESS]: getBoardSoundsSuccessHandler,
     [ATS.GET_KEYS_SUCCESS]: getKeysSuccessHandler,
-    [ATS.GET_SHORTCUT_COMMANDS_SUCCESS]: getShortcutCommandsHandler
+    [ATS.GET_SHORTCUT_COMMANDS_SUCCESS]: getShortcutCommandsSuccessHandler,
+    [ATS.AUTHENTICATE_REQ]: authenticateReqHandler,
+    [ATS.GET_BOARDS_REQ]: getBoardsReqHandler,
+    [ATS.GET_BOARD_SOUNDS_REQ]: getBoardSoundsReqHandler,
+    [ATS.GET_KEYS_REQ]: getKeysReqHandler,
+    [ATS.GET_SHORTCUT_COMMANDS_REQ]: getShortcutCommandsReqHandler
   })(newState, action);
   return schema.reducer()(newState, action);
 }

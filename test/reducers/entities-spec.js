@@ -1,5 +1,6 @@
 import expect from 'expect';
 import infect from 'infect';
+import { sortBy } from 'lodash';
 
 import 'test/test-helper';
 import schema from 'app/store/schema';
@@ -57,7 +58,7 @@ describe('Reducer - entities', function() {
       1: {id: 1, name: 'hat'},
       2: {id: 2, name: 'shoes'}
     });
-    expect(newState.Items.items.sort()).toEqual(['1', '2']);
+    expect(sortBy(newState.Items.items)).toEqual(['1', '2']);
     expect(newState.Customers.itemsById).toEqual({
       4: {id: 4, name: 'Marcus'}
     });

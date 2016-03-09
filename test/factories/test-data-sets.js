@@ -1,11 +1,12 @@
-import { range } from 'lodash';
+import { range, reduce } from 'lodash';
+import i from 'icepick';
 
 import { entityMapToOrmData } from 'app/reducers/entities';
 import { SHORTCUT_ACTIONS } from 'app/constants';
 import config from 'app/util/config';
 import * as facs from './';
 
-export const TEST_DATA = {
+export const STUB_DATA = {
   Key: facs.KeyFac
     .buildList(25)
     .concat(facs.KeyFac.build({id: 26, shortcuts: [1]})),
@@ -39,7 +40,7 @@ export const TEST_DATA = {
   Session: facs.SessionFac.buildList(1)
 };
 
-export const TEST_VALS = {
+export const INITIAL_STORE_DATA = {
   Board: [],
   Config: facs.ConfigFac.buildList(1, {id: 1, dj: 1, shortcuts: [1]}),
   DJ: facs.DjFac.buildList(1, {id: 1, boards: [1], config: 1}),
@@ -55,4 +56,21 @@ export const TEST_VALS = {
   Session: []
 };
 
-export const TEST_ENTITIES = entityMapToOrmData(TEST_VALS);
+const setFetched = ormData => reduce(
+  ormData,
+  (acc, entities, entityType) => {
+    if(entities.items.length > 0) {
+      acc[entityType] = i.assign(entities, {haveBeenFetched: true});
+    }
+    else {
+      acc[entityType] = entities;
+    }
+    return acc;
+  },
+  {}
+);
+
+export const entityFac =
+  entityData => setFetched(entityMapToOrmData(entityData));
+
+export const DEMO_ENTITIES = setFetched(entityMapToOrmData(INITIAL_STORE_DATA));

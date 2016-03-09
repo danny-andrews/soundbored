@@ -8,10 +8,10 @@ import delayResponse from 'app/middleware/delay-response';
 import config from 'app/util/config';
 import DevTools from 'app/containers/dev-tools';
 import rootReducer from 'app/reducers';
-import { TEST_ENTITIES, TEST_DATA } from 'test/factories';
+import { DEMO_ENTITIES, STUB_DATA } from 'test/factories';
 import schema from 'app/store/schema';
 
-const INITIAL_STATE = {entities: TEST_ENTITIES};
+const INITIAL_STATE = {entities: DEMO_ENTITIES};
 const delay = config.inTest() ? 0 : 1000;
 
 const entitiesToJsonApiReponse = (entities, type) => entities.map(entity =>
@@ -35,21 +35,21 @@ function stubRequests() {
       name: 'getKeys',
       matcher: /\/keys/,
       response: {
-        data: entitiesToJsonApiReponse(TEST_DATA.Key, 'key')
+        data: entitiesToJsonApiReponse(STUB_DATA.Key, 'key')
       }
     },
     {
       name: 'getBoards',
       matcher: /\/boards$/,
       response: {
-        data: entitiesToJsonApiReponse(TEST_DATA.Board, 'board')
+        data: entitiesToJsonApiReponse(STUB_DATA.Board, 'board')
       }
     },
     {
       name: 'getBoardSounds',
       matcher: /\/boards\/\d+\/sounds/,
       response: {
-        data: entitiesToJsonApiReponse(TEST_DATA.Sound, 'sound')
+        data: entitiesToJsonApiReponse(STUB_DATA.Sound, 'sound')
       }
     },
     {
@@ -57,7 +57,7 @@ function stubRequests() {
       matcher: /shortcut-commands/,
       response: {
         data: entitiesToJsonApiReponse(
-          TEST_DATA.ShortcutCommand,
+          STUB_DATA.ShortcutCommand,
           'shortcutCommand'
         )
       }

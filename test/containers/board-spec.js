@@ -8,18 +8,18 @@ import { assign } from 'icepick';
 import 'test/test-helper';
 import { PLAY_SOUND, KILL_ALL_SOUNDS }
   from 'app/constants/action-types';
-import { entityMapToOrmData } from 'app/reducers/entities';
 import SoundPlayer from 'app/components/sound-player';
 import Board from 'app/containers/board';
 import configureStore from 'app/store/configure-store';
-import { SoundFac, TEST_VALS, TEST_DATA } from 'test/factories';
+import { SoundFac, INITIAL_STORE_DATA, STUB_DATA, entityFac }
+  from 'test/factories';
 
 describe('Containers - Board', function() {
   beforeEach(function() {
     this.sound1 = SoundFac.build({id: 1, displayName: 'Woof', playCount: 0});
     this.sound4 = SoundFac.build({id: 4, displayName: 'Meow'});
-    const storeEntities = entityMapToOrmData(
-      assign(TEST_VALS, TEST_DATA, {
+    const storeEntities = entityFac(
+      assign(INITIAL_STORE_DATA, STUB_DATA, {
         Sound: [this.sound1, this.sound4]
       })
     );

@@ -3,7 +3,6 @@ import assert, { assertAll } from 'arg-assert';
 import { createSelector } from 'reselect';
 import { chain } from 'lodash';
 
-import * as selectors from 'app/store/selectors';
 import { CALL_API } from 'app/middleware/api';
 import * as ATS from 'app/constants/action-types';
 
@@ -40,42 +39,35 @@ export const authenticate = spec =>
     }
   };
 
-const fetchBoards = () =>
-  (dispatch, getState) => {
-    const token = getToken(getState());
-    assert(token, 'Api token must be present. Have you authenticated?');
-    return dispatch(createAction(ATS.GET_BOARDS_REQ)({
-      [CALL_API]: {
-        types: {
-          successType: ATS.GET_BOARDS_SUCCESS,
-          failureType: ATS.GET_BOARDS_FAILURE
-        },
-        url: '/boards',
-        type: 'json',
-        headers: {Bearer: token, 'Content-Type': 'application/vnd.api+json'},
-        method: 'GET'
-      }
-    }));
-  };
+const fetchBoards = token =>
+  createAction(ATS.GET_BOARDS_REQ)({
+    [CALL_API]: {
+      types: {
+        successType: ATS.GET_BOARDS_SUCCESS,
+        failureType: ATS.GET_BOARDS_FAILURE
+      },
+      url: '/boards',
+      type: 'json',
+      headers: {Bearer: token, 'Content-Type': 'application/vnd.api+json'},
+      method: 'GET'
+    }
+  });
 
-let fetchingBoards = false;
 export const loadBoards = () =>
   (dispatch, getState) => {
-    const boards = selectors.boards(getState().entities).toRefArray();
-    if(boards.length > 0 || fetchingBoards) {
+    const boards = getState().entities.Board;
+    if(boards.isFetching || boards.haveBeenFetched) {
       return undefined;
     }
     else {
-      fetchingBoards = true;
-      return dispatch(fetchBoards());
+      const token = getToken(getState());
+      assert(token, 'Api token must be present. Have you authenticated?');
+      return dispatch(fetchBoards(token));
     }
   };
 
-const fetchKeys = () =>
-  (dispatch, getState) => {
-    const token = getToken(getState());
-    assert(token, 'Api token must be present. Have you authenticated?');
-    return dispatch(createAction(ATS.GET_KEYS_REQ)({
+const fetchKeys = token =>
+    createAction(ATS.GET_KEYS_REQ)({
       [CALL_API]: {
         types: {
           successType: ATS.GET_KEYS_SUCCESS,
@@ -86,81 +78,73 @@ const fetchKeys = () =>
         headers: {Bearer: token, 'Content-Type': 'application/vnd.api+json'},
         method: 'GET'
       }
-    }));
-  };
+    });
 
-let fetchingKeys = false;
 export const loadKeys = () =>
   (dispatch, getState) => {
-    const keys = selectors.keys(getState().entities).toRefArray();
-    if(keys.length > 0 || fetchingKeys) {
+    const keys = getState().entities.Key;
+    if(keys.isFetching || keys.haveBeenFetched) {
       return undefined;
     }
     else {
-      fetchingKeys = true;
-      return dispatch(fetchKeys());
+      const token = getToken(getState());
+      assert(token, 'Api token must be present. Have you authenticated?');
+      return dispatch(fetchKeys(token));
     }
   };
 
-const fetchBoardSounds = boardId =>
-  (dispatch, getState) => {
-    const token = getToken(getState());
-    assert(token, 'Api token must be present. Have you authenticated?');
-    return dispatch(createAction(ATS.GET_BOARD_SOUNDS_REQ)({
-      [CALL_API]: {
-        types: {
-          successType: ATS.GET_BOARD_SOUNDS_SUCCESS,
-          failureType: ATS.GET_BOARD_SOUNDS_FAILURE
-        },
-        url: `/boards/${boardId}/sounds`,
-        type: 'json',
-        headers: {Bearer: token, 'Content-Type': 'application/vnd.api+json'},
-        method: 'GET'
-      }
-    }));
-  };
+const fetchBoardSounds = spec => {
+  const {boardId, token} = spec;
+  return createAction(ATS.GET_BOARD_SOUNDS_REQ)({
+    [CALL_API]: {
+      types: {
+        successType: ATS.GET_BOARD_SOUNDS_SUCCESS,
+        failureType: ATS.GET_BOARD_SOUNDS_FAILURE
+      },
+      url: `/boards/${boardId}/sounds`,
+      type: 'json',
+      headers: {Bearer: token, 'Content-Type': 'application/vnd.api+json'},
+      method: 'GET'
+    }
+  });
+};
 
-let fetchingBoardSounds = false;
 export const loadBoardSounds = boardId =>
   (dispatch, getState) => {
-    const sounds = selectors.sounds(getState().entities).toRefArray();
-    if(sounds.length > 0 || fetchingBoardSounds) {
+    const sounds = getState().entities.Sound;
+    if(sounds.isFetching || sounds.haveBeenFetched) {
       return undefined;
     }
     else {
-      fetchingBoardSounds = true;
-      return dispatch(fetchBoardSounds(boardId));
+      const token = getToken(getState());
+      assert(token, 'Api token must be present. Have you authenticated?');
+      return dispatch(fetchBoardSounds({boardId, token}));
     }
   };
 
-const fetchShortcutCommands = () =>
-  (dispatch, getState) => {
-    const token = getToken(getState());
-    assert(token, 'Api token must be present. Have you authenticated?');
-    return dispatch(createAction(ATS.GET_KEYS_REQ)({
-      [CALL_API]: {
-        types: {
-          successType: ATS.GET_SHORTCUT_COMMANDS_SUCCESS,
-          failureType: ATS.GET_SHORTCUT_COMMANDS_FAILURE
-        },
-        url: `/shortcut-commands`,
-        type: 'json',
-        headers: {Bearer: token, 'Content-Type': 'application/vnd.api+json'},
-        method: 'GET'
-      }
-    }));
-  };
+const fetchShortcutCommands = token =>
+  createAction(ATS.GET_SHORTCUT_COMMANDS_REQ)({
+    [CALL_API]: {
+      types: {
+        successType: ATS.GET_SHORTCUT_COMMANDS_SUCCESS,
+        failureType: ATS.GET_SHORTCUT_COMMANDS_FAILURE
+      },
+      url: `/shortcut-commands`,
+      type: 'json',
+      headers: {Bearer: token, 'Content-Type': 'application/vnd.api+json'},
+      method: 'GET'
+    }
+  });
 
-let fetchingShortcutCommands = false;
 export const loadShortcutCommands = () =>
   (dispatch, getState) => {
-    const shortcutCommands = selectors.shortcutCommands(getState().entities)
-      .toRefArray();
-    if(shortcutCommands.length > 0 || fetchingShortcutCommands) {
+    const shortcutCommands = getState().entities.ShortcutCommand;
+    if(shortcutCommands.isFetching || shortcutCommands.haveBeenFetched) {
       return undefined;
     }
     else {
-      fetchingShortcutCommands = true;
-      return dispatch(fetchShortcutCommands());
+      const token = getToken(getState());
+      assert(token, 'Api token must be present. Have you authenticated?');
+      return dispatch(fetchShortcutCommands(token));
     }
   };
