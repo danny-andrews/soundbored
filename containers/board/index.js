@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { SHORTCUT_ACTIONS } from 'app/constants';
 import { Key } from 'app/models';
-import * as selectors from 'app/store/selectors';
+import * as sels from 'app/store/selectors';
 import * as actions from 'app/actions';
 import templ from './board.jsx';
 import loadingTempl from 'app/components/loading/loading.jsx';
@@ -49,33 +49,33 @@ const Board = React.createClass({
   },
   getUpdatedState(nextProps = undefined) {
     const {entities, previousAction, session} = nextProps || this.props;
-    const boards = selectors.boards(entities).toRefArray();
-    if(!selectors.session(entities)) {
+    const boards = sels.boards(entities).toRefArray();
+    if(!sels.session(entities)) {
       return {};
     }
     this.props.loadKeys({});
     this.props.loadShortcutCommands({});
     this.props.loadBoards({});
-    if(selectors.keys(entities).toRefArray().length === 0 ||
-        selectors.shortcutCommands(entities).toRefArray().length === 0 ||
-        boards.length === 0) {
+    if(!entities.Key.haveBeenFetched ||
+        !entities.ShortcutCommand.haveBeenFetched ||
+        !entities.Board.haveBeenFetched) {
       return {};
     }
     this.props.loadBoardSounds(boards[0].id);
-    if(selectors.sounds(entities).toRefArray().length === 0 ||
-        selectors.shortcuts(entities).toRefArray().length === 0) {
+    if(!entities.Sound.haveBeenFetched ||
+        sels.shortcuts(entities).count() === 0) {
       return {};
     }
     if(!shortcutsAssigned) {
       this.props.assignShortcutKeys({});
       shortcutsAssigned = true;
     }
-    const killSoundsShortcut = selectors.killSoundsShortcut(entities);
+    const killSoundsShortcut = sels.killSoundsShortcut(entities);
     const killSoundsKey = killSoundsShortcut ?
       ` (${killSoundsShortcut.key.displayCode()})` :
       '';
-    const soundArray = selectors.sounds(entities).toModelArray();
-    this.soundPlayers = selectors.soundPlayers(entities);
+    const soundArray = sels.sounds(entities).toModelArray();
+    this.soundPlayers = sels.soundPlayers(entities);
     return {
       playSound: this.playSound,
       killAllSounds: this.killAllSounds,
