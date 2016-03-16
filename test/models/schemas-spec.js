@@ -18,7 +18,7 @@ describe('Models - schemas', function() {
     });
 
     it('has "dj" association', function() {
-      expect(this.subject.DJ[12].name).toBe('Kaskade');
+      expect(this.subject.Dj[12].name).toBe('Kaskade');
     });
 
     it('has "sounds" association', function() {
@@ -41,7 +41,7 @@ describe('Models - schemas', function() {
     });
 
     it('has "dj" association', function() {
-      expect(this.subject.DJ[38].name).toBe('Bob');
+      expect(this.subject.Dj[38].name).toBe('Bob');
     });
 
     it('has "shortcuts" association', function() {
@@ -60,7 +60,7 @@ describe('Models - schemas', function() {
     });
 
     it('uses "id" as id', function() {
-      expect(3 in this.subject.DJ).toBe(true);
+      expect(3 in this.subject.Dj).toBe(true);
     });
 
     it('has "config" association', function() {
