@@ -25,3 +25,6 @@ export const KEY_PRESS = 'KEY_PRESS';
 export const ASSIGN_SHORTCUT_KEYS = 'ASSIGN_SHORTCUT_KEYS';
 
 export const INIT = '@@INIT';
+
+export const CREATE_BOARD = 'CREATE_BOARD';
+export const CREATE_SOUND = 'CREATE_SOUND';

@@ -10,7 +10,7 @@ import * as ATS from 'app/constants/action-types';
 const INITIAL_STATE = reduce([
     'Board',
     'Config',
-    'DJ',
+    'Dj',
     'Key',
     'Shortcut',
     'ShortcutCommand',
@@ -37,7 +37,7 @@ function playSoundHandler(state, action) {
 }
 
 const successHandler = (state, type) =>
-  i.merge(state, {[type]: {haveBeenFetched: true}});
+  i.merge(state, {[type]: {haveBeenFetched: true, isFetching: false}});
 
 const requestHandler = (state, type) =>
   i.merge(state, {[type]: {isFetching: true}});
@@ -95,5 +95,6 @@ export default function(state = INITIAL_STATE, action) {
     [ATS.GET_KEYS_REQ]: getKeysReqHandler,
     [ATS.GET_SHORTCUT_COMMANDS_REQ]: getShortcutCommandsReqHandler
   })(newState, action);
+
   return schema.reducer()(newState, action);
 }

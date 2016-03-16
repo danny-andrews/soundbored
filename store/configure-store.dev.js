@@ -79,8 +79,9 @@ const finalCreateStore = compose(
   DevTools.instrument()
 )(createStore);
 
-export default function configureStore(initialState = INITIAL_STATE) {
+export default function(initialState = INITIAL_STATE) {
   const store = finalCreateStore(rootReducer, initialState);
-  schema.from(store.getState().entities);
+  const session = schema.from(store.getState().entities);
+  store.session = () => session;
   return store;
 }

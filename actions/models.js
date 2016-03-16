@@ -1,5 +1,5 @@
 import { createAction } from 'redux-actions';
 
-import { ASSIGN_SHORTCUT_KEYS } from 'app/constants/action-types';
+import * as ATS from 'app/constants/action-types';
 
-export const assignShortcutKeys = createAction(ASSIGN_SHORTCUT_KEYS);
+export const assignShortcutKeys = createAction(ATS.ASSIGN_SHORTCUT_KEYS);

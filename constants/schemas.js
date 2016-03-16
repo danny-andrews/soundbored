@@ -6,7 +6,7 @@ export const SINGLETON_ID = 'SINGLETON_ID';
 
 const boardSchema = new Schema('Board');
 const configSchema = new Schema('Config');
-const djSchema = new Schema('DJ');
+const djSchema = new Schema('Dj');
 const keySchema = new Schema('Key');
 const sessionSchema = new Schema('Session', {idAttribute: () => SINGLETON_ID});
 const shortcutSchema = new Schema('Shortcut');

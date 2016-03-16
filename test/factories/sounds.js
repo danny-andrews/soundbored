@@ -1,6 +1,9 @@
 import assert from 'arg-assert';
 import { Factory } from 'rosie';
 
+import { Sound } from 'app/models';
+import { ShortcutModelFac } from './shortcuts';
+
 export const TEST_FILENAME = 'wow.mp3';
 
 export const SoundFac = new Factory()
@@ -21,3 +24,8 @@ export const SoundFac = new Factory()
     }
   })
   .attr('playCount', 0);
+
+export const SoundModelFac = new Factory(attrs => Sound.create(attrs))
+  .extend(SoundFac)
+  .attr('shortcut', ['id', 'shortcut'], (id, shortcut) =>
+    shortcut ? shortcut : ShortcutModelFac.build({shortcut: id}));
