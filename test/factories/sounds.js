@@ -10,10 +10,14 @@ export const SoundFac = new Factory()
   .sequence('id')
   .sequence('boardId')
   .attr('displayName', 'Woof!')
-  .attr('filename', ['filename'], function(filename) {
+  .option('suppressWarning', false)
+  .attr('filename', [
+    'filename',
+    'suppressWarning'
+  ], (filename, suppressWarning) => {
     if(Boolean(filename)) {
       assert(
-        process.env.NODE_ENV !== 'test',
+        suppressWarning || process.env.NODE_ENV !== 'test',
         "[Sound Factory]: Don't set a custom filename, so as to avoid 404\'s" +
           ' when rendering audio tags in tests'
       );

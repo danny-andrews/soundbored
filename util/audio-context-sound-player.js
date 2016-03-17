@@ -72,7 +72,7 @@ export default function AudioContextSoundPlayer(filepath) {
     activePlayers = i.freeze([]);
   }
 
-  return Object.freeze({setup, load, stopAll});
+  return Object.freeze({setup, load, stopAll, filepath});
 }
 
 AudioContextSoundPlayer.audioCache = i.freeze({});

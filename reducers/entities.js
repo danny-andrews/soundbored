@@ -7,25 +7,15 @@ import { Sound } from 'app/models';
 import schema from 'app/store/schema';
 import * as ATS from 'app/constants/action-types';
 
-const INITIAL_STATE = reduce([
-    'Board',
-    'Config',
-    'Dj',
-    'Key',
-    'Shortcut',
-    'ShortcutCommand',
-    'Sound',
-    'Session'
-  ],
-  (acc, entityType) => {
-    acc[entityType] = {
-      itemsById: {},
-      items: [],
-      haveBeenFetched: false,
-      isFetching: false
-    };
-    return acc;
-  },
+const INITIAL_STATE = reduce(
+  schema.getDefaultState(),
+  (acc, val, entityType) =>
+    i.assign(acc, {
+      [entityType]: i.assign(val, {
+        haveBeenFetched: false,
+        isFetching: false
+      })
+    }),
   {}
 );
 

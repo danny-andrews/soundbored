@@ -51,7 +51,7 @@ export default function AudioTagSoundPlayer(filepath) {
     activePlayers = i.freeze([]);
   }
 
-  return Object.freeze({setup, load, stopAll});
+  return Object.freeze({setup, load, stopAll, filepath});
 }
 
 AudioTagSoundPlayer.audioCache = i.freeze({});
