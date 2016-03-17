@@ -10,14 +10,14 @@ describe('Model - board', function() {
   });
 
   it('belongs to dj', function() {
-    const dj = DjModelFac.build({id: 4});
-    const board = BoardModelFac.build({id: 1, dj});
+    const dj = DjModelFac.build();
+    const board = BoardModelFac.build({dj});
     expect(board.dj.equals(dj)).toBe(true);
   });
 
   it('has sounds many-to-many relationship', function() {
-    const sound = SoundModelFac.build({id: 4});
-    const board = BoardModelFac.build({id: 1, sounds: [sound]});
-    expect(board.sounds.first().equals(sound)).toBe(true);
+    const sounds = SoundModelFac.buildList(1);
+    const board = BoardModelFac.build({sounds});
+    expect(board.sounds.first().equals(sounds[0])).toBe(true);
   });
 });

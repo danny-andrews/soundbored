@@ -6,6 +6,7 @@ import { difference, chain } from 'lodash';
 import { SHORTCUT_ACTIONS } from 'app/constants';
 import { ASSIGN_SHORTCUT_KEYS } from 'app/constants/action-types';
 
+// TODO: Move this logic to the backend.
 function assignShortcutKeysHandler(session) {
   const playSoundCommandId = session.ShortcutCommand.get({
     name: SHORTCUT_ACTIONS.PLAY_SOUND

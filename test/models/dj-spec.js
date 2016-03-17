@@ -10,8 +10,8 @@ describe('Model - dj', function() {
   });
 
   it('has one config', function() {
-    const dj = DjModelFac.build({id: 1});
-    const config = ConfigModelFac.build({id: 4, dj});
+    const dj = DjModelFac.build();
+    const config = ConfigModelFac.build({dj});
     expect(dj.config.equals(config)).toBe(true);
   });
 });

@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
-import { values } from 'lodash';
+import _, { values } from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import i from 'icepick';
 
 import { SHORTCUT_ACTIONS } from 'app/constants';
 import { Key } from 'app/models';
@@ -75,7 +76,8 @@ const Board = React.createClass({
       ` (${killSoundsShortcut.key.displayCode()})` :
       '';
     const soundArray = sels.sounds(entities).toModelArray();
-    this.soundPlayers = sels.soundPlayers(entities);
+    this.soundPlayers = _(sels.soundPlayers(entities))
+      .reduce((acc, player, id) => i.assign(acc, {[id]: player.setup()}), {});
     return {
       playSound: this.playSound,
       killAllSounds: this.killAllSounds,
