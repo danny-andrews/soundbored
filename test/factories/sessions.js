@@ -1,6 +1,6 @@
-import { Factory } from 'rosie';
+import {Factory} from 'rosie';
 
-import { Session } from 'app/models';
+import {Session} from 'app/models';
 
 export const SessionFac = new Factory()
   .sequence('id')

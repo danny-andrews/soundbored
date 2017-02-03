@@ -1,6 +1,5 @@
 import expect from 'expect';
-
-import { KeyModelFac } from 'test/factories';
+import {KeyModelFac} from 'test/factories';
 import schema from 'app/store/schema';
 
 describe('Model - key', function() {

@@ -1,6 +1,5 @@
+import {ConfigModelFac, DjModelFac} from 'test/factories';
 import expect from 'expect';
-
-import { DjModelFac, ConfigModelFac } from 'test/factories';
 import schema from 'app/store/schema';
 
 describe('Model - config', function() {

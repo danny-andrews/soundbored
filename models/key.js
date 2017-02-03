@@ -1,5 +1,4 @@
-// jscs:disable disallowKeywords
-import { Model } from 'redux-orm';
+import {Model} from 'redux-orm';
 
 export class Key extends Model {
   displayCode() {

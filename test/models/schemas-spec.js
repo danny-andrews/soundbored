@@ -1,7 +1,6 @@
+import schemas, {SINGLETON_ID} from 'app/constants/schemas';
 import expect from 'expect';
-import { normalize } from 'normalizr';
-
-import schemas, { SINGLETON_ID } from 'app/constants/schemas';
+import {normalize} from 'normalizr';
 
 describe('Models - schemas', function() {
   describe('board', function() {

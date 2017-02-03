@@ -1,4 +1,4 @@
-jscs + jshint -> eslint
+~jscs + jshint -> eslint~
 webpack 1.x -> webpack 2.x
 Grunt -> node scripts
 materialize -> something else

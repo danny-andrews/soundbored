@@ -1,18 +1,18 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import stateMutationGuardMiddleware from 'redux-immutable-state-invariant';
-import thunk from 'redux-thunk';
-import stubber from 'fetch-mock';
-
+import {applyMiddleware, compose, createStore} from 'redux';
+import {DEMO_ENTITIES, STUB_DATA} from 'test/factories';
 import api from 'app/middleware/api';
-import delayResponse from 'app/middleware/delay-response';
 import config from 'app/util/config';
+import delayResponse from 'app/middleware/delay-response';
 import DevTools from 'app/containers/dev-tools';
 import rootReducer from 'app/reducers';
-import { DEMO_ENTITIES, STUB_DATA } from 'test/factories';
 import schema from 'app/store/schema';
+import stateMutationGuardMiddleware from 'redux-immutable-state-invariant';
+import stubber from 'fetch-mock';
+import thunk from 'redux-thunk';
 
 const INITIAL_STATE = {entities: DEMO_ENTITIES};
-const delay = config.inTest() ? 0 : 1000;
+const DELAY_AMOUNT = 1000;
+const delay = config.inTest() ? 0 : DELAY_AMOUNT;
 
 const entitiesToJsonApiReponse = (entities, type) => entities.map(entity =>
   ({
@@ -83,5 +83,6 @@ export default function(initialState = INITIAL_STATE) {
   const store = finalCreateStore(rootReducer, initialState);
   const session = schema.from(store.getState().entities);
   store.session = () => session;
+
   return store;
 }

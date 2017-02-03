@@ -1,10 +1,9 @@
-import { range, reduce } from 'lodash';
-import i from 'icepick';
-
-import { entityMapToOrmData } from 'app/reducers/entities';
-import { SHORTCUT_ACTIONS } from 'app/constants';
-import config from 'app/util/config';
 import * as facs from './';
+import {range, reduce} from 'lodash';
+import config from 'app/util/config';
+import {entityMapToOrmData} from 'app/reducers/entities';
+import i from 'icepick';
+import {SHORTCUT_ACTIONS} from 'app/constants';
 
 export const STUB_DATA = {
   Key: facs.KeyFac
@@ -15,16 +14,16 @@ export const STUB_DATA = {
     dj: 1,
     sounds: [range(1, config.get('SOUNDFILES').length)]
   }),
-  Sound: config.inDev() ?
-    config.get('SOUNDFILES').map((filename, id) =>
+  Sound: config.inDev()
+    ? config.get('SOUNDFILES').map((filename, id) =>
       facs.SoundFac.build({
         id: id + 1,
         boards: [1],
         filename,
         displayName: filename.split('.')[0]
       })
-    ) :
-    facs.SoundFac.buildList(1),
+    )
+    : facs.SoundFac.buildList(1),
   ShortcutCommand: [
     facs.ShortcutCommandFac.build({
       id: 1,
@@ -65,6 +64,7 @@ const setFetched = ormData => reduce(
     else {
       acc[entityType] = entities;
     }
+
     return acc;
   },
   {}

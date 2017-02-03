@@ -1,3 +1,5 @@
+/* global require, module */
+/* eslint-disable global-require */
 import config from 'app/util/config';
 
 if(config.inProd()) {

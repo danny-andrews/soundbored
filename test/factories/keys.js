@@ -1,6 +1,6 @@
-import { Factory } from 'rosie';
+import {Factory} from 'rosie';
 
-import { Key } from 'app/models';
+import {Key} from 'app/models';
 
 const START_CODE = 65;
 

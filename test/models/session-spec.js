@@ -1,7 +1,6 @@
 import expect from 'expect';
-
 import schema from 'app/store/schema';
-import { SessionModelFac } from 'test/factories';
+import {SessionModelFac} from 'test/factories';
 
 describe('Model - session', function() {
   beforeEach(function() {

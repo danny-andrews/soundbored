@@ -1,6 +1,8 @@
-/* jshint varstmt: false */
+/* global global */
+/* eslint-env node */
+/* eslint-disable prefer-destructuring, no-var */
 var jsdom = require('jsdom').jsdom;
-const MARKUP = `<!DOCTYPE html><html><head></head><body></body></html>`;
+const MARKUP = '<!DOCTYPE html><html><head></head><body></body></html>';
 
 global.document = jsdom(MARKUP);
 global.window = document.defaultView;
@@ -13,7 +15,9 @@ require('./dist/vendor');
 function propagateToGlobal(window) {
   Object.keys(window)
     .filter(key => !(key in global))
-    .forEach(key => global[key] = window[key]);
+    .forEach(key => {
+      global[key] = window[key];
+    });
 }
 
 // Take all properties of the window object and also attach it to the mocha

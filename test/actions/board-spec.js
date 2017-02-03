@@ -1,7 +1,6 @@
+import {KEY_PRESS, KILL_ALL_SOUNDS, PLAY_SOUND} from 'app/constants';
+import {keyPress, killAllSounds, playSound} from 'app/actions';
 import expect from 'expect';
-
-import { playSound, killAllSounds, keyPress } from 'app/actions';
-import { PLAY_SOUND, KILL_ALL_SOUNDS, KEY_PRESS } from 'app/constants';
 
 describe('Actions - board', () => {
   describe('#playSound', function() {

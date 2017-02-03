@@ -1,11 +1,10 @@
-import i from 'icepick';
-import { reduce } from 'lodash';
-import { handleActions } from 'redux-actions';
-import infect from 'infect';
-
-import { Sound } from 'app/models';
-import schema from 'app/store/schema';
 import * as ATS from 'app/constants/action-types';
+import {handleActions} from 'redux-actions';
+import i from 'icepick';
+import infect from 'infect';
+import {reduce} from 'lodash';
+import schema from 'app/store/schema';
+import {Sound} from 'app/models';
 
 const INITIAL_STATE = reduce(
   schema.getDefaultState(),
@@ -23,6 +22,7 @@ function playSoundHandler(state, action) {
   const id = action.payload;
   const sound = Sound.withId(id);
   sound.update({playCount: sound.playCount + 1});
+
   return i.merge(state, {Sound: Sound.getNextState()});
 }
 
@@ -48,12 +48,14 @@ const getShortcutCommandsReqHandler =
 
 export const entityMapToOrmData = map =>
   reduce(map, (result, entities, entityType) => {
-    entityType = entityType.charAt(0).toUpperCase() + entityType.slice(1);
+    const entityTypeCapped = entityType.charAt(0).toUpperCase()
+      + entityType.slice(1);
     const idMap = entities.reduce(
       (res, curValue) => i.set(res, curValue.id, curValue),
       {}
     );
-    return i.set(result, entityType, {
+
+    return i.set(result, entityTypeCapped, {
       itemsById: idMap,
       items: Object.keys(idMap)
     });
@@ -66,9 +68,14 @@ export default function(state = INITIAL_STATE, action) {
   if(entities) {
     newState = i.merge(newState, entityMapToOrmData(entities));
     newState = reduce(newState, (acc, entity, entityType) => {
-      acc = i.set(acc, entityType, entity);
-      acc = i.setIn(acc, [entityType, 'items'], Object.keys(entity.itemsById));
-      return acc;
+      let newVal = i.set(acc, entityType, entity);
+      newVal = i.setIn(
+        newVal,
+        [entityType, 'items'],
+        Object.keys(entity.itemsById)
+      );
+
+      return newVal;
     }, {});
   }
 

@@ -1,11 +1,13 @@
-/* jshint varstmt: false */
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var glob = require('glob');
-var i = require('icepick');
-var path = require('path');
-var webpack = require('webpack');
+/* eslint-env node */
+/* eslint-disable no-var */
+var ExtractTextPlugin = require('extract-text-webpack-plugin'),
+  glob = require('glob'),
+  i = require('icepick'),
+  path = require('path'),
+  webpack = require('webpack'),
+  webpackConfigBase = require('./webpack.config.base.js');
 
-var webpackConfigBase = i.freeze(require('./webpack.config.base.js'));
+webpackConfigBase = i.freeze(webpackConfigBase);
 
 module.exports = i.merge(webpackConfigBase, {
   entry: {

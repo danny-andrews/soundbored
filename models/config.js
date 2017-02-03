@@ -1,5 +1,4 @@
-// jscs:disable disallowKeywords
-import { oneToOne, Model } from 'redux-orm';
+import {Model, oneToOne} from 'redux-orm';
 
 export class Config extends Model {}
 Config.modelName = 'Config';

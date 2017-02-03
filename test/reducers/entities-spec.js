@@ -1,12 +1,11 @@
+import 'test/test-helper';
+import {ActionFac, SoundFac} from 'test/factories';
+import subject, {entityMapToOrmData} from 'app/reducers/entities';
 import expect from 'expect';
 import infect from 'infect';
-import { sortBy } from 'lodash';
-
-import 'test/test-helper';
+import {playSound} from 'app/actions';
 import schema from 'app/store/schema';
-import { playSound } from 'app/actions';
-import subject, { entityMapToOrmData } from 'app/reducers/entities';
-import { ActionFac, SoundFac } from 'test/factories';
+import {sortBy} from 'lodash';
 
 infect.set('ResponseDataTransformer', f => f);
 
@@ -15,9 +14,10 @@ function actionResponseFactory(entitiesHash = {}) {
 }
 
 function stateFactory(state) {
-  state = entityMapToOrmData(state);
-  schema.from(state);
-  return state;
+  const newState = entityMapToOrmData(state);
+  schema.from(newState);
+
+  return newState;
 }
 
 describe('Reducer - entities', function() {
@@ -116,7 +116,7 @@ describe('Reducer - entities', function() {
         Sound: [SoundFac.build({id: 1, playCount: 3})]
       });
       const newState = subject(state, playSound(1));
-      const selectedSound = newState.Sound.itemsById[1];
+      const [, selectedSound] = newState.Sound.itemsById;
       expect(selectedSound.playCount).toBe(4);
     });
   });

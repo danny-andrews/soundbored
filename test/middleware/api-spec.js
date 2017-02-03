@@ -1,9 +1,8 @@
+import middleware, {CALL_API} from 'app/middleware/api';
+import {ab2str} from 'app/util/audio-helpers';
+import {ApiActionFac} from 'test/factories';
 import expect from 'expect';
 import stubber from 'fetch-mock';
-
-import middleware, { CALL_API } from 'app/middleware/api';
-import { ab2str } from 'app/util/audio-helpers';
-import { ApiActionFac } from 'test/factories';
 
 function subject(spec = {}) {
   const {action, nextFunc: nextFunc = () => {}} = spec;
@@ -23,27 +22,27 @@ describe('Middleware - api', function() {
     });
 
     it('calls next with given action', function() {
-      let spy = expect.createSpy();
+      const spy = expect.createSpy();
       subject({nextFunc: spy, action: this.fakeAction});
       expect(spy.calls.length).toBe(1);
       expect(spy).toHaveBeenCalledWith(this.fakeAction);
     });
 
     it('returns result of calling next with given action', function() {
-      let actual = subject({nextFunc: () => 4, action: this.fakeAction});
+      const actual = subject({nextFunc: () => 4, action: this.fakeAction});
       expect(actual).toBe(4);
     });
   });
 
   it('throws error when url is not a string', function() {
-    let fakeAction = ApiActionFac.build({
+    const fakeAction = ApiActionFac.build({
       [CALL_API]: {url: 3}
     });
     expect(() => subject({action: fakeAction})).toThrow(/url/i);
   });
 
   it('throws error when successType is undefined', function() {
-    let fakeAction = ApiActionFac.build({
+    const fakeAction = ApiActionFac.build({
       [CALL_API]: {
         types: {successType: undefined}
       }
@@ -52,7 +51,7 @@ describe('Middleware - api', function() {
   });
 
   it('throws error when failureType is undefined', function() {
-    let fakeAction = ApiActionFac.build({
+    const fakeAction = ApiActionFac.build({
       [CALL_API]: {
         types: {failureType: undefined}
       }
@@ -61,7 +60,7 @@ describe('Middleware - api', function() {
   });
 
   it('calls next with action (excluding CALL_API)', function() {
-    let fakeAction = ApiActionFac.build({
+    const fakeAction = ApiActionFac.build({
       type: 'REQ_TYPE',
       id: 1,
       [CALL_API]: {
@@ -70,6 +69,7 @@ describe('Middleware - api', function() {
       }
     });
     stubber.mock(/data\/1/, 'POST', {body: {}});
+
     return new Promise(resolve =>
       subject({nextFunc: resolve, action: fakeAction})
     ).then(actual => {
@@ -86,7 +86,7 @@ describe('Middleware - api', function() {
     });
 
     it('calls next with response from api call', function() {
-      let fakeAction = ApiActionFac.build({
+      const fakeAction = ApiActionFac.build({
         [CALL_API]: {
           url: 'data/1',
           method: 'POST',
@@ -94,9 +94,10 @@ describe('Middleware - api', function() {
           types: {successType: 'SUCCESS'}
         }
       });
-      let spy = expect.createSpy();
+      const spy = expect.createSpy();
+
       return subject({nextFunc: spy, action: fakeAction}).then(() => {
-        const action = spy.calls[1].arguments[0];
+        const [action] = spy.calls[1].arguments;
         const respData = action.response.data;
         expect(action.type).toBe('SUCCESS');
         expect(action.response.status).toBe(200);
@@ -114,15 +115,16 @@ describe('Middleware - api', function() {
     });
 
     it('calls next with response from api call', function() {
-      let fakeAction = ApiActionFac.build({
+      const fakeAction = ApiActionFac.build({
         [CALL_API]: {
           url: 'data/1',
           types: {failureType: 'FAILURE'}
         }
       });
-      let spy = expect.createSpy();
+      const spy = expect.createSpy();
+
       return subject({nextFunc: spy, action: fakeAction}).then(() => {
-        const action = spy.calls[1].arguments[0];
+        const [action] = spy.calls[1].arguments;
         expect(action.type).toBe('FAILURE');
         expect(action.error).toBe('you are not authorized');
         expect(action.response.status).toBe(401);
@@ -136,17 +138,18 @@ describe('Middleware - api', function() {
     });
 
     it('calls next with response from api call', function() {
-      let fakeAction = ApiActionFac.build({
+      const fakeAction = ApiActionFac.build({
         [CALL_API]: {
           url: 'data/1',
           type: 'arrayBuffer'
         }
       });
-      let spy = expect.createSpy();
+      const spy = expect.createSpy();
+
       return subject({nextFunc: spy, action: fakeAction}).then(() => {
-        const action = spy.calls[1].arguments[0];
+        const [action] = spy.calls[1].arguments;
         const respData = action.response.data;
-        const blob = respData.blob;
+        const {blob} = respData;
         expect(blob).toExist();
         expect(ab2str(blob)).toBe('I am binary data: 000111');
       });

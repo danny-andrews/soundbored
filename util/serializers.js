@@ -1,4 +1,4 @@
-import { camelizeKeys, decamelizeKeys } from 'humps';
+import {camelizeKeys, decamelizeKeys} from 'humps';
 
 const identity = () => arg => arg;
 
@@ -26,6 +26,7 @@ export function JSONSerializer(data) {
     if(typeof data === 'string') {
       retVal = JSON.parse(data);
     }
+
     return camelizeKeys(retVal);
   }
 

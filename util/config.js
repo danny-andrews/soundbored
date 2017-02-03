@@ -1,3 +1,4 @@
+/* global process */
 export default (function(env) {
   const inDev = () => env.NODE_ENV === 'development';
   const inTest = () => env.NODE_ENV === 'test';
@@ -7,4 +8,4 @@ export default (function(env) {
     [get('ASSET_PATH'), assetType, filename].join('/');
 
   return Object.freeze({inDev, inTest, inProd, get, assetPath});
-})(process.env);
+}(process.env));

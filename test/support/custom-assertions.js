@@ -4,6 +4,7 @@ const hasRecomputed = opts => {
   const {sel, session} = opts;
   const origRecomps = sel.recomputations();
   sel(session.getNextState());
+
   return sel.recomputations() - origRecomps === 1;
 };
 

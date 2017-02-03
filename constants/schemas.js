@@ -1,6 +1,6 @@
-import { Schema, arrayOf } from 'normalizr';
-import uuid from 'node-uuid';
+import {arrayOf, Schema} from 'normalizr';
 import i from 'icepick';
+import uuid from 'node-uuid';
 
 export const SINGLETON_ID = 'SINGLETON_ID';
 

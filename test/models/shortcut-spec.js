@@ -1,6 +1,5 @@
-import expect from 'expect';
-
 import * as facs from 'test/factories';
+import expect from 'expect';
 import schema from 'app/store/schema';
 
 describe('Model - shortcut', function() {

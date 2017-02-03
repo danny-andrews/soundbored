@@ -1,7 +1,6 @@
+import {BoardModelFac, DjModelFac, SoundModelFac} from 'test/factories';
 import expect from 'expect';
-
 import schema from 'app/store/schema';
-import { DjModelFac, BoardModelFac, SoundModelFac } from 'test/factories';
 
 describe('Model - board', function() {
   beforeEach(function() {

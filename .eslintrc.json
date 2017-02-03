@@ -1,0 +1,7 @@
+{
+  "extends": "@danny.andrews/eslint-config",
+  "rules": {
+    "no-undefined": "off",
+    "no-invalid-this": "off"
+  }
+}

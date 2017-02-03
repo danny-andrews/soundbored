@@ -1,7 +1,6 @@
 import expect from 'expect';
-
 import schema from 'app/store/schema';
-import { ShortcutCommandModelFac } from 'test/factories';
+import {ShortcutCommandModelFac} from 'test/factories';
 
 describe('Model - shortcutCommand', function() {
   beforeEach(function() {

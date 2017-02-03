@@ -1,7 +1,6 @@
+import {ASSIGN_SHORTCUT_KEYS} from 'app/constants';
+import {assignShortcutKeys} from 'app/actions';
 import expect from 'expect';
-
-import { assignShortcutKeys } from 'app/actions';
-import { ASSIGN_SHORTCUT_KEYS } from 'app/constants';
 
 describe('Actions - models', () => {
   describe('#assignShortcutKeys', function() {
