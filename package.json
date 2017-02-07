@@ -11,9 +11,9 @@
   "scripts": {
     "ci": "yarn run lint && yarn run test",
     "lint": "eslint . && sort-package-json",
-    "test": "webpack --config webpack.config.test.js && mocha -r test/setup test/dist/tests",
     "serve-demo": "open http://localhost:1234 && webpack-dev-server --config=webpack.config.demo.js --port 1234 --inline",
-    "serve-test": "open http://localhost:4387 && webpack-dev-server --config=webpack.config.test.js --port=4387 --inline --content-base=test"
+    "serve-test": "open http://localhost:4387 && webpack-dev-server --config=webpack.config.test.js --port=4387 --inline --content-base=test",
+    "test": "webpack --config webpack.config.test.js && mocha -r test/setup test/dist/tests"
   },
   "dependencies": {
     "arg-assert": "0.0.2",
