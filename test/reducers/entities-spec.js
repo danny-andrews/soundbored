@@ -116,7 +116,7 @@ describe('Reducer - entities', function() {
         Sound: [SoundFac.build({id: 1, playCount: 3})]
       });
       const newState = subject(state, playSound(1));
-      const [, selectedSound] = newState.Sound.itemsById;
+      const {1: selectedSound} = newState.Sound.itemsById;
       expect(selectedSound.playCount).toBe(4);
     });
   });
