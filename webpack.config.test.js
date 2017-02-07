@@ -9,7 +9,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin'),
 
 webpackConfigBase = i.freeze(webpackConfigBase);
 
-module.exports = i.merge(webpackConfigBase, {
+module.exports = i.thaw(i.merge(webpackConfigBase, {
   entry: {
     tests: glob.sync('test/*/*spec.js'),
     vendor: ['mocha/mocha.js', 'mocha/mocha.css']
@@ -30,4 +30,4 @@ module.exports = i.merge(webpackConfigBase, {
     })
   ),
   devtool: 'source-map'
-});
+}));

@@ -9,7 +9,11 @@
     "url": "https://github.com/danny-andrews/soundbored.git"
   },
   "scripts": {
-    "lint": "node_modules/.bin/eslint . && node_modules/.bin/sort-package-json"
+    "ci": "yarn run lint && yarn run test",
+    "lint": "eslint . && sort-package-json",
+    "test": "webpack --config webpack.config.test.js && mocha -r test/setup test/dist/tests",
+    "serve-demo": "open http://localhost:1234 && webpack-dev-server --config=webpack.config.demo.js --port 1234 --inline",
+    "serve-test": "open http://localhost:4387 && webpack-dev-server --config=webpack.config.test.js --port=4387 --inline --content-base=test"
   },
   "dependencies": {
     "arg-assert": "0.0.2",
@@ -48,10 +52,6 @@
     "fetch-mock": "^4.1.0",
     "file-loader": "^0.8.5",
     "glob": "^6.0.1",
-    "grunt": "^0.4.5",
-    "grunt-mocha-test": "^0.12.7",
-    "grunt-open": "^0.2.3",
-    "grunt-webpack": "^1.0.11",
     "imports-loader": "^0.6.5",
     "jsdom": "^7.2.0",
     "jsonfile": "^2.2.3",

@@ -11,7 +11,7 @@ var DIST_PATH = 'dist';
 
 webpackConfigBase = i.freeze(webpackConfigBase);
 
-module.exports = i.merge(webpackConfigBase, {
+module.exports = i.thaw(i.merge(webpackConfigBase, {
   entry: {
     app: 'index.js',
     vendor: webpackConfigBase.entry.vendor.concat(
@@ -31,4 +31,4 @@ module.exports = i.merge(webpackConfigBase, {
     })
   ),
   devtool: 'none'
-});
+}));
