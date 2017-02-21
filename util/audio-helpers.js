@@ -1,4 +1,4 @@
-import { TextDecoder, TextEncoder } from 'text-encoding';
+import {TextDecoder, TextEncoder} from 'text-encoding';
 
 export function ab2str(buf) {
   return new TextDecoder('utf-8').decode(new DataView(buf));

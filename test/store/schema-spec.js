@@ -1,5 +1,4 @@
 import expect from 'expect';
-
 import schema from 'app/store/schema';
 
 describe('Store - schema', function() {

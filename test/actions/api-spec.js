@@ -1,11 +1,10 @@
-import expect from 'expect';
-import i from 'icepick';
-
-import { entityMapToOrmData } from 'app/reducers/entities';
-import { CALL_API } from 'app/middleware/api';
 import * as actions from 'app/actions';
 import * as ATS from 'app/constants/action-types';
 import * as facs from 'test/factories';
+import {CALL_API} from 'app/middleware/api';
+import {entityMapToOrmData} from 'app/reducers/entities';
+import expect from 'expect';
+import i from 'icepick';
 
 const stateFac = entityData => ({entities: entityMapToOrmData(entityData)});
 const fakeDispatch = f => f;

@@ -1,10 +1,8 @@
-import { Factory } from 'rosie';
-
-import { Shortcut } from 'app/models';
-
-import { ConfigModelFac } from './configs';
-import { KeyModelFac } from './keys';
-import { ShortcutCommandModelFac } from './shortcut-commands';
+import {ConfigModelFac} from './configs';
+import {Factory} from 'rosie';
+import {KeyModelFac} from './keys';
+import {Shortcut} from 'app/models';
+import {ShortcutCommandModelFac} from './shortcut-commands';
 
 export const ShortcutFac = new Factory()
   .sequence('id')
@@ -15,10 +13,10 @@ export const ShortcutFac = new Factory()
 export const ShortcutModelFac = new Factory(attrs => Shortcut.create(attrs))
   .extend(ShortcutFac)
   .attr('config', ['id', 'config'], (id, config) =>
-    config ? config : ConfigModelFac.build({config: id}))
+    (config ? config : ConfigModelFac.build({config: id})))
   .attr('key', ['id', 'key'], (id, key) =>
-    key ? key : KeyModelFac.build({key: id}))
+    (key ? key : KeyModelFac.build({key: id})))
   .attr('shortcutCommand', ['id', 'shortcutCommand'], (id, shortcutCommand) =>
-    shortcutCommand ? shortcutCommand : ShortcutCommandModelFac.build({
+    (shortcutCommand ? shortcutCommand : ShortcutCommandModelFac.build({
       shortcutCommand: id
-    }));
+    })));

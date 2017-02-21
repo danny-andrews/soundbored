@@ -1,25 +1,28 @@
+import * as facs from 'test/factories';
 import expect from 'expect';
+import {merge} from 'icepick';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
-import { merge } from 'icepick';
-
-import * as facs from 'test/factories';
 import SoundPlayer from 'app/components/sound-player';
+import TestUtils from 'react-addons-test-utils';
 
 function Subject(props = {}) {
   const playSoundSpy = expect.createSpy();
-  props = merge({sound: facs.SoundFac.build(), playSound: playSoundSpy}, props);
+  const newProps = merge({
+    sound: facs.SoundFac.build(),
+    playSound: playSoundSpy
+  }, props);
   const renderer = TestUtils.createRenderer();
-  renderer.render(React.createElement(SoundPlayer, props));
+  renderer.render(React.createElement(SoundPlayer, newProps));
   const component = TestUtils.renderIntoDocument(
-    React.createElement(SoundPlayer, props)
+    React.createElement(SoundPlayer, newProps)
   );
   const domEl = ReactDOM.findDOMNode(component);
   const button = TestUtils.findRenderedDOMComponentWithClass(
     component,
     'play-sound-btn'
   );
+
   return {component, domEl, button, playSoundSpy};
 }
 

@@ -1,10 +1,9 @@
-import { createAction } from 'redux-actions';
-import assert, { assertAll } from 'arg-assert';
-import { createSelector } from 'reselect';
-import { chain } from 'lodash';
-
-import { CALL_API } from 'app/middleware/api';
 import * as ATS from 'app/constants/action-types';
+import assert, {assertAll} from 'arg-assert';
+import {CALL_API} from 'app/middleware/api';
+import {chain} from 'lodash';
+import {createAction} from 'redux-actions';
+import {createSelector} from 'reselect';
 
 const getToken = createSelector(
   state => chain(state.entities.Session.itemsById).values().first().value(),
@@ -14,6 +13,7 @@ const getToken = createSelector(
 const login = createAction(ATS.AUTHENTICATE_REQ, spec => {
   const {auid, name} = spec;
   assertAll({auid, name});
+
   return {
     [CALL_API]: {
       types: {
@@ -62,6 +62,7 @@ export const loadBoards = () =>
     else {
       const token = getToken(getState());
       assert(token, 'Api token must be present. Have you authenticated?');
+
       return dispatch(fetchBoards(token));
     }
   };
@@ -89,12 +90,14 @@ export const loadKeys = () =>
     else {
       const token = getToken(getState());
       assert(token, 'Api token must be present. Have you authenticated?');
+
       return dispatch(fetchKeys(token));
     }
   };
 
 const fetchBoardSounds = spec => {
   const {boardId, token} = spec;
+
   return createAction(ATS.GET_BOARD_SOUNDS_REQ)({
     [CALL_API]: {
       types: {
@@ -118,6 +121,7 @@ export const loadBoardSounds = boardId =>
     else {
       const token = getToken(getState());
       assert(token, 'Api token must be present. Have you authenticated?');
+
       return dispatch(fetchBoardSounds({boardId, token}));
     }
   };
@@ -129,7 +133,7 @@ const fetchShortcutCommands = token =>
         successType: ATS.GET_SHORTCUT_COMMANDS_SUCCESS,
         failureType: ATS.GET_SHORTCUT_COMMANDS_FAILURE
       },
-      url: `/shortcut-commands`,
+      url: '/shortcut-commands',
       type: 'json',
       headers: {Bearer: token, 'Content-Type': 'application/vnd.api+json'},
       method: 'GET'
@@ -145,6 +149,7 @@ export const loadShortcutCommands = () =>
     else {
       const token = getToken(getState());
       assert(token, 'Api token must be present. Have you authenticated?');
+
       return dispatch(fetchShortcutCommands(token));
     }
   };

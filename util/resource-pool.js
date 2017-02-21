@@ -3,11 +3,11 @@ import i from 'icepick';
 
 export default function(resources) {
   assert(
-    Array.isArray(resources) &&
-      resources.length > 0 &&
-      resources.every(resource => resource.hasOwnProperty('id')),
-    '"resources" param must be an array with length > 0 of elements with an ' +
-      '"id" property'
+    Array.isArray(resources)
+      && resources.length > 0
+      && resources.every(resource => resource.hasOwnProperty('id')),
+    '"resources" param must be an array with length > 0 of elements with an '
+      + '"id" property'
   );
 
   let availableQueue = i.freeze(resources);
@@ -18,9 +18,10 @@ export default function(resources) {
   }
   function busy() {
     assert(hasFreeResource(), 'No available resources');
-    const lastEl = availableQueue[0];
+    const [lastEl] = availableQueue;
     busyMap = i.set(busyMap, lastEl.id, lastEl);
     availableQueue = i.shift(availableQueue);
+
     return lastEl;
   }
   function free(id) {

@@ -1,5 +1,5 @@
-import { Factory } from 'rosie';
-import { Schema } from 'normalizr';
+import {Factory} from 'rosie';
+import {Schema} from 'normalizr';
 
 export const ApiTypesFac = new Factory()
   .attr('successType', 'REQ_SUCCESS')

@@ -1,15 +1,14 @@
-import React, { PropTypes } from 'react';
-import _, { values } from 'lodash';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import i from 'icepick';
-
-import { SHORTCUT_ACTIONS } from 'app/constants';
-import { Key } from 'app/models';
-import * as sels from 'app/store/selectors';
 import * as actions from 'app/actions';
-import templ from './board.jsx';
+import * as sels from 'app/store/selectors';
+import _, {values} from 'lodash';
+import React, {PropTypes} from 'react';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import i from 'icepick';
+import {Key} from 'app/models';
 import loadingTempl from 'app/components/loading/loading.jsx';
+import {SHORTCUT_ACTIONS} from 'app/constants';
+import templ from './board.jsx';
 
 function mapStateToProps(state) {
   return {
@@ -57,14 +56,14 @@ const Board = React.createClass({
     this.props.loadKeys({});
     this.props.loadShortcutCommands({});
     this.props.loadBoards({});
-    if(!entities.Key.haveBeenFetched ||
-        !entities.ShortcutCommand.haveBeenFetched ||
-        !entities.Board.haveBeenFetched) {
+    if(!entities.Key.haveBeenFetched
+        || !entities.ShortcutCommand.haveBeenFetched
+        || !entities.Board.haveBeenFetched) {
       return {};
     }
     this.props.loadBoardSounds(boards[0].id);
-    if(!entities.Sound.haveBeenFetched ||
-        sels.shortcuts(entities).count() === 0) {
+    if(!entities.Sound.haveBeenFetched
+        || sels.shortcuts(entities).count() === 0) {
       return {};
     }
     if(!shortcutsAssigned) {
@@ -72,12 +71,13 @@ const Board = React.createClass({
       shortcutsAssigned = true;
     }
     const killSoundsShortcut = sels.killSoundsShortcut(entities);
-    const killSoundsKey = killSoundsShortcut ?
-      ` (${killSoundsShortcut.key.displayCode()})` :
-      '';
+    const killSoundsKey = killSoundsShortcut
+      ? ` (${killSoundsShortcut.key.displayCode()})`
+      : '';
     const soundArray = sels.sounds(entities).toModelArray();
     this.soundPlayers = _(sels.soundPlayers(entities))
       .reduce((acc, player, id) => i.assign(acc, {[id]: player.setup()}), {});
+
     return {
       playSound: this.playSound,
       killAllSounds: this.killAllSounds,
@@ -109,9 +109,9 @@ const Board = React.createClass({
   },
   keyPress(keyCode) {
     const key = Key.get({code: keyCode});
-    const shortcut = key.shortcuts.toModelArray()[0];
+    const [shortcut] = key.shortcuts.toModelArray();
     if(!shortcut) {
-      return;
+      return undefined;
     }
     switch(shortcut.shortcutCommand.name) {
     case SHORTCUT_ACTIONS.PLAY_SOUND:
@@ -132,6 +132,7 @@ const Board = React.createClass({
     this.soundPlayers[soundId]
       .then(soundPlayer => soundPlayer.load())
       .then(player => player.start(0));
+
     return this.props.playSound(soundId);
   }
 });

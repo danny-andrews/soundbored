@@ -1,5 +1,4 @@
-// jscs:disable disallowKeywords
-import { many, fk, Model } from 'redux-orm';
+import {fk, many, Model} from 'redux-orm';
 
 export class Board extends Model {}
 Board.modelName = 'Board';

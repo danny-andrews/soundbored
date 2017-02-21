@@ -1,0 +1,7 @@
+~jscs + jshint -> eslint~
+~Grunt -> node scripts~
+webpack 1.x -> webpack 2.x
+materialize -> something else
+mocha -> ava
+Move backend to firebase
+Move default sounds to ./public instead of test/public

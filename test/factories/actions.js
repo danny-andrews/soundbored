@@ -1,7 +1,6 @@
-import { Factory } from 'rosie';
-
-import { ApiOptsFac } from './';
-import { CALL_API } from 'app/middleware/api';
+import {ApiOptsFac} from './';
+import {CALL_API} from 'app/middleware/api';
+import {Factory} from 'rosie';
 
 export const ActionFac = new Factory()
   .attr('type', 'FAKE');

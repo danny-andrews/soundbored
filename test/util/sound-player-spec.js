@@ -1,9 +1,8 @@
+import {assetPath} from 'app/util/config';
 import expect from 'expect';
-import stubber from 'fetch-mock';
-
-import { assetPath } from 'app/util/config';
-import { TEST_FILENAME } from 'test/factories/sounds';
 import SoundPlayerFactory from 'app/util/sound-player-factory';
+import stubber from 'fetch-mock';
+import {TEST_FILENAME} from 'test/factories/sounds';
 
 describe('AudioContextSoundPlayer', function() {
   beforeEach(function() {
@@ -43,7 +42,9 @@ describe('AudioContextSoundPlayer', function() {
   describe('#stopAll', function() {
     beforeEach(function() {
       return this.subject.setup()
-        .then(soundPlayer => this.soundPlayer = soundPlayer);
+        .then(soundPlayer => {
+          this.soundPlayer = soundPlayer;
+        });
     });
 
     it('stops all currently playing sounds', function() {

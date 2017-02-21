@@ -1,7 +1,6 @@
+import {ActionFac} from 'test/factories/';
 import expect from 'expect';
-
 import subject from 'app/reducers/previous-action';
-import { ActionFac } from 'test/factories/';
 
 describe('Reducer - previous-action', function() {
   beforeEach(function() {

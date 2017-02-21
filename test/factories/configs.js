@@ -1,7 +1,6 @@
-import { Factory } from 'rosie';
-
-import { Config } from 'app/models';
-import { DjModelFac } from './djs';
+import {Config} from 'app/models';
+import {DjModelFac} from './djs';
+import {Factory} from 'rosie';
 
 export const ConfigFac = new Factory()
   .sequence('id')
@@ -10,4 +9,4 @@ export const ConfigFac = new Factory()
 export const ConfigModelFac = new Factory(attrs => Config.create(attrs))
   .extend(ConfigFac)
   .attr('dj', ['id', 'dj'], (id, dj) =>
-    dj ? dj : DjModelFac.build({config: id}));
+    (dj ? dj : DjModelFac.build({config: id})));

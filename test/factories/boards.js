@@ -1,7 +1,6 @@
-import { Factory } from 'rosie';
-
-import { DjModelFac } from './djs';
-import { Board } from 'app/models';
+import {Board} from 'app/models';
+import {DjModelFac} from './djs';
+import {Factory} from 'rosie';
 
 export const BoardFac = new Factory()
   .sequence('id')
@@ -9,4 +8,4 @@ export const BoardFac = new Factory()
 
 export const BoardModelFac = new Factory(attrs => Board.create(attrs))
   .extend(BoardFac)
-  .attr('dj', ['dj'], dj => dj ? dj : DjModelFac.build());
+  .attr('dj', ['dj'], dj => (dj ? dj : DjModelFac.build()));

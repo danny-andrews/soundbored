@@ -1,11 +1,10 @@
-import assert from 'arg-assert';
 import 'fetch';
+import assert from 'arg-assert';
+import {error} from 'app/util/logger';
 import i from 'icepick';
+import {normalizeFeature} from 'app/util/feature-detector';
 
-import { normalizeFeature } from 'app/util/feature-detector';
-import { error } from 'app/util/logger';
-
-const AudioContext = normalizeFeature('audio-api') || function() {};
+const AudioContext = normalizeFeature('audio-api') || (() => {});
 const audioContext = new AudioContext();
 
 export default function AudioContextSoundPlayer(filepath) {
@@ -15,7 +14,10 @@ export default function AudioContextSoundPlayer(filepath) {
     function start(...args) {
       activePlayers = i.push(activePlayers, this);
       node.start(...args);
-      return new Promise(resolve => node.onended = resolve);
+
+      return new Promise(resolve => {
+        node.onended = resolve;
+      });
     }
     function stop() {
       node.stop();
@@ -35,6 +37,7 @@ export default function AudioContextSoundPlayer(filepath) {
     const source = audioContext.createBufferSource();
     source.buffer = decodedAudioData;
     source.connect(audioContext.destination);
+
     return DecoratedAudioBufferSourceNode(source);
   }
 
@@ -52,14 +55,16 @@ export default function AudioContextSoundPlayer(filepath) {
       .then(decodedData => {
         AudioContextSoundPlayer.audioCache =
           i.set(AudioContextSoundPlayer.audioCache, filepath, decodedData);
+
         return this;
       })
       .catch(err => error(`Error decoding audio data ${err}`));
   }
 
   function load() {
-    assert(soundLoaded(), 'You must call "setup" before calling "load" on ' +
-      'a Sound instance');
+    assert(soundLoaded(), 'You must call "setup" before calling "load" on '
+      + 'a Sound instance');
+
     return Promise.resolve(
       createPlayer({
         decodedAudioData: AudioContextSoundPlayer.audioCache[filepath]

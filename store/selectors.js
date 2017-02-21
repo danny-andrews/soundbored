@@ -1,11 +1,10 @@
-import { createSelector, defaultMemoize, createSelectorCreator }
+import {createSelector, createSelectorCreator, defaultMemoize}
   from 'reselect';
-import { reduce } from 'lodash';
-
-import { SHORTCUT_ACTIONS } from 'app/constants';
 import config from 'app/util/config';
-import SoundPlayerFactory from 'app/util/sound-player-factory';
+import {reduce} from 'lodash';
 import schema from 'app/store/schema';
+import {SHORTCUT_ACTIONS} from 'app/constants';
+import SoundPlayerFactory from 'app/util/sound-player-factory';
 
 const ormSelector = state => state.entities || state;
 
@@ -15,35 +14,35 @@ export function soundPath(filename) {
 
 export const session = createSelector(
   ormSelector,
-  schema.createSelector(session => session.Session.all().toModelArray()[0])
+  schema.createSelector(sess => sess.Session.all().toModelArray()[0])
 );
 
 export const sounds = createSelector(
   ormSelector,
-  schema.createSelector(session => session.Sound.all())
+  schema.createSelector(sess => sess.Sound.all())
 );
 
 export const boards = createSelector(
   ormSelector,
-  schema.createSelector(session => session.Board.all())
+  schema.createSelector(sess => sess.Board.all())
 );
 
 export const keys = createSelector(
   ormSelector,
-  schema.createSelector(session => session.Key.all())
+  schema.createSelector(sess => sess.Key.all())
 );
 
 export const shortcuts = createSelector(
   ormSelector,
-  schema.createSelector(session => session.Shortcut.all())
+  schema.createSelector(sess => sess.Shortcut.all())
 );
 
 export const shortcutCommands = createSelector(
   ormSelector,
-  schema.createSelector(session => session.ShortcutCommand.all())
+  schema.createSelector(sess => sess.ShortcutCommand.all())
 );
 
-const soundRefs = createSelector(sounds, sounds => sounds.toRefArray());
+const soundRefs = createSelector(sounds, snds => snds.toRefArray());
 
 const soundsByFilenameSelectorCreator = createSelectorCreator(
   defaultMemoize,
@@ -55,30 +54,31 @@ const soundsByFilenameSelectorCreator = createSelectorCreator(
 
 export const soundPlayers = soundsByFilenameSelectorCreator(
   soundRefs,
-  sounds => reduce(sounds, (acc, sound) => {
+  snds => reduce(snds, (acc, sound) => {
     acc[sound.id] = SoundPlayerFactory(soundPath(sound.filename));
+
     return acc;
   }, {})
 );
 
 export const killSoundsShortcutCommand = createSelector(
   ormSelector,
-  schema.createSelector(session =>
-    session.ShortcutCommand.get({name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS})
+  schema.createSelector(sess =>
+    sess.ShortcutCommand.get({name: SHORTCUT_ACTIONS.KILL_ALL_SOUNDS})
   )
 );
 
 export const playSoundShortcutCommand = createSelector(
   ormSelector,
-  schema.createSelector(session =>
-    session.ShortcutCommand.get({name: SHORTCUT_ACTIONS.PLAY_SOUND})
+  schema.createSelector(sess =>
+    sess.ShortcutCommand.get({name: SHORTCUT_ACTIONS.PLAY_SOUND})
   )
 );
 
 export const killSoundsShortcut = createSelector(
   shortcuts,
   killSoundsShortcutCommand,
-  (shortcuts, killSoundsCommand) =>
-    shortcuts.filter(sc => sc.shortcutCommand.id === killSoundsCommand.id)
+  (shrtcuts, killSoundsCommand) =>
+    shrtcuts.filter(sc => sc.shortcutCommand.id === killSoundsCommand.id)
       .first()
 );

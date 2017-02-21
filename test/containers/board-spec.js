@@ -1,18 +1,16 @@
+import 'test/test-helper';
+import {entityFac, INITIAL_STORE_DATA, SoundFac, STUB_DATA}
+  from 'test/factories';
+import {KILL_ALL_SOUNDS, PLAY_SOUND} from 'app/constants/action-types';
+import {assign} from 'icepick';
+import Board from 'app/containers/board';
+import configureStore from 'app/store/configure-store';
 import expect from 'expect';
 import infect from 'infect';
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
-import stubber from 'fetch-mock';
-import { assign } from 'icepick';
-
-import 'test/test-helper';
-import { PLAY_SOUND, KILL_ALL_SOUNDS }
-  from 'app/constants/action-types';
 import SoundPlayer from 'app/components/sound-player';
-import Board from 'app/containers/board';
-import configureStore from 'app/store/configure-store';
-import { SoundFac, INITIAL_STORE_DATA, STUB_DATA, entityFac }
-  from 'test/factories';
+import stubber from 'fetch-mock';
+import TestUtils from 'react-addons-test-utils';
 
 describe('Containers - Board', function() {
   beforeEach(function() {
@@ -56,7 +54,8 @@ describe('Containers - Board', function() {
     });
 
     it('sets props.playSound', function() {
-      const props = this.props;
+      const {props} = this;
+
       return new Promise(resolve => {
         this.store.subscribe(resolve);
         props.playSound(1);
@@ -79,7 +78,8 @@ describe('Containers - Board', function() {
     });
 
     it('dispatches KILL_ALL_SOUNDS action when clicked', function() {
-      const killswitch = this.killswitch;
+      const {killswitch} = this;
+
       return new Promise(resolve => {
         this.store.subscribe(resolve);
         TestUtils.Simulate.click(killswitch);

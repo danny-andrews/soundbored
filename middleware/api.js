@@ -1,10 +1,9 @@
-import assert from 'arg-assert';
 import 'fetch';
+import assert from 'arg-assert';
+import {camelizeKeys} from 'humps';
+import {error} from 'app/util/logger';
 import i from 'icepick';
-import { camelizeKeys } from 'humps';
-
 import SerializerFactory from 'app/util/serializers';
-import { error } from 'app/util/logger';
 
 export const CALL_API = 'CALL_API';
 
@@ -24,8 +23,8 @@ export default () => next => action => {
   assert(
     [successType, failureType]
       .every(reqType => Boolean(reqType) && typeof reqType === 'string'),
-    'Expected an object with "successType," and "failureType" ' +
-      'defined as strings.'
+    'Expected an object with "successType," and "failureType" '
+      + 'defined as strings.'
   );
   assert(
     SUPPORTED_RESPONSE_TYPES.indexOf(type) > -1,
@@ -34,6 +33,7 @@ export default () => next => action => {
 
   function nextWithAction(actionData) {
     const finalAction = i.assign(action, actionData);
+
     return next(i.unset(finalAction, CALL_API));
   }
 
@@ -44,6 +44,7 @@ export default () => next => action => {
     mode: apiOptions.crossOrigin ? 'cors' : 'same-origin',
     body: serializer.serialize()
   });
+
   return window.fetch(url, adapterOpts)
     .then(response =>
       response[type]().then(respData => {

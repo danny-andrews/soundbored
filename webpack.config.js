@@ -1,13 +1,17 @@
-/* jshint varstmt: false */
-/* jscs:disable requireTemplateStrings */
-var i = require('icepick');
-var path = require('path');
-var webpack = require('webpack');
-var webpackConfigBase = i.freeze(require('./webpack.config.base'));
+/* eslint-env node */
+/* eslint-disable one-var, no-var */
+var i = require('icepick'),
+  path = require('path'),
+  webpack = require('webpack'),
+  webpackConfigBase = require('./webpack.config.base');
 
 var DIST_PATH = 'dist';
 
-module.exports = i.merge(webpackConfigBase, {
+/* eslint-enable one-var */
+
+webpackConfigBase = i.freeze(webpackConfigBase);
+
+module.exports = i.thaw(i.merge(webpackConfigBase, {
   entry: {
     app: 'index.js',
     vendor: webpackConfigBase.entry.vendor.concat(
@@ -27,4 +31,4 @@ module.exports = i.merge(webpackConfigBase, {
     })
   ),
   devtool: 'none'
-});
+}));

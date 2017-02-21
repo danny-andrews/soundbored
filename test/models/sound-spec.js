@@ -1,6 +1,5 @@
+import {BoardModelFac, ShortcutModelFac, SoundModelFac} from 'test/factories';
 import expect from 'expect';
-
-import { SoundModelFac, BoardModelFac, ShortcutModelFac } from 'test/factories';
 import schema from 'app/store/schema';
 
 describe('Model - sound', function() {

@@ -1,10 +1,9 @@
-import expect from 'expect';
-
-import * as sels from 'app/store/selectors';
-import schema from 'app/store/schema';
-import * as facs from 'test/factories';
 import 'test/support/custom-assertions';
-import { SHORTCUT_ACTIONS } from 'app/constants';
+import * as facs from 'test/factories';
+import * as sels from 'app/store/selectors';
+import expect from 'expect';
+import schema from 'app/store/schema';
+import {SHORTCUT_ACTIONS} from 'app/constants';
 
 describe('Store - selectors', function() {
   beforeEach(function() {

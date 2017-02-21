@@ -1,10 +1,8 @@
-// jscs:disable disallowKeywords
-import { fk, oneToOne, Model } from 'redux-orm';
-import { handleActions } from 'redux-actions';
-import { difference, chain } from 'lodash';
-
-import { SHORTCUT_ACTIONS } from 'app/constants';
-import { ASSIGN_SHORTCUT_KEYS } from 'app/constants/action-types';
+import {chain, difference} from 'lodash';
+import {fk, Model, oneToOne} from 'redux-orm';
+import {ASSIGN_SHORTCUT_KEYS} from 'app/constants/action-types';
+import {handleActions} from 'redux-actions';
+import {SHORTCUT_ACTIONS} from 'app/constants';
 
 // TODO: Move this logic to the backend.
 function assignShortcutKeysHandler(session) {
@@ -41,12 +39,12 @@ function assignShortcutKeysHandler(session) {
 }
 
 export class Shortcut extends Model {
-  static reducer(state, action, Shortcut, session) {
+  static reducer(state, action, klass, session) {
     handleActions({
       [ASSIGN_SHORTCUT_KEYS]: () => assignShortcutKeysHandler(session)
     })(state, action);
 
-    return Shortcut.getNextState();
+    return klass.getNextState();
   }
 }
 Shortcut.modelName = 'Shortcut';
