@@ -36,7 +36,7 @@ describe('Component - SoundPlayer', function() {
           })
         })
       });
-      expect(subject.button.children[1].innerHTML).toMatch(/\(.*K.*\)/);
+      expect(subject.button.textContent).toMatch(/\(.*K.*\)/);
     });
   });
 
@@ -45,7 +45,7 @@ describe('Component - SoundPlayer', function() {
       sound: facs.SoundFac.build({displayName: 'PlayMe'})
     });
     expect(subject.domEl.tagName.toLowerCase()).toBe('span');
-    expect(subject.button.children[0].innerHTML).toBe('PlayMe');
+    expect(subject.button.textContent).toBe('PlayMe');
   });
 
   it('plays sound when button is pressed', function() {
