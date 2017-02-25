@@ -17,41 +17,50 @@ module.exports = {
   entry: {vendor: dependencies},
   output: {filename: '[name].js'},
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx/,
-        loaders: ['babel-loader', 'jsx-template-loader'],
+        use: ['babel-loader', 'jsx-template-loader'],
         exclude: /node_modules/
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        use: 'babel-loader',
         exclude: /node_modules/
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style', ['css', 'sass'])
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'sass-loader']
+        })
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'css')
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       },
       {
         test: /\.woff(2)?$/,
         loader: 'url-loader',
-        query: {
+        options: {
           limit: 10000,
           mimetype: 'application/font-woff'
         }
       },
       {
         test: /\.(ttf|eot|svg)$/,
-        loader: 'file-loader'
+        use: 'file-loader'
       }
     ]
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('vendor', '[name].js'),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: '[name].js'
+    }),
     new webpack.ProvidePlugin({
       Promise: 'core-js/library/es6/promise',
       'Object.assign': 'core-js/fn/object/assign',
@@ -65,10 +74,9 @@ module.exports = {
       selector: 'app/containers/dev-tools/selector',
       SoundPlayer: 'app/components/sound-player'
     }),
-    new ExtractTextPlugin('app.css')
+    new ExtractTextPlugin('[name].css')
   ],
   resolve: {
-    root: __dirname,
     alias: {
       app: path.resolve(),
       test: path.resolve('test'),

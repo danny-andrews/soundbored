@@ -14,7 +14,7 @@ webpackConfigBase = i.freeze(webpackConfigBase);
 
 module.exports = i.thaw(i.merge(webpackConfigBase, {
   entry: {
-    app: 'index.js',
+    app: './index.js',
     vendor: webpackConfigBase.entry.vendor.concat(
       'materialize-css/dist/css/materialize.css',
       'materialize-css/dist/js/materialize.js'

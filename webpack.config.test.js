@@ -18,7 +18,7 @@ module.exports = i.thaw(i.merge(webpackConfigBase, {
   output: {path: path.resolve('test', 'dist')},
   module: {noParse: /mocha\.js/},
   plugins: webpackConfigBase.plugins.concat(
-    new ExtractTextPlugin('vendor', 'vendor.css'),
+    new ExtractTextPlugin('vendor.css'),
     new webpack.DefinePlugin({
       'process.env': i.assign(ENV, {
         NODE_ENV: '"test"',
