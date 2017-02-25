@@ -1,12 +1,12 @@
 import {Factory} from 'rosie';
-import {Schema} from 'normalizr';
+import {schema} from 'normalizr';
 
 export const ApiTypesFac = new Factory()
   .attr('successType', 'REQ_SUCCESS')
   .attr('failureType', 'REQ_FALURE');
 
 export const ApiOptsFac = new Factory()
-  .attr('schema', new Schema('fakes'))
+  .attr('schema', new schema.Entity('fakes'))
   .attr('url', '/fake/api')
   .attr('crossOrigin', false)
   .attr('type', 'json')
