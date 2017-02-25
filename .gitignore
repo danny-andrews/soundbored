@@ -2,3 +2,4 @@ node_modules
 containers/dev-tools/selector.js
 test/public/sounds
 test/dist/
+dist/
