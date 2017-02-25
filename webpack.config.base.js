@@ -1,20 +1,14 @@
 /* eslint-env node */
 /* eslint-disable one-var, prefer-destructuring, no-var,
   prefer-arrow-callback, object-shorthand */
-var glob = require('glob'),
-  readJSONSync = require('jsonfile').readFileSync,
+var readJSONSync = require('jsonfile').readFileSync,
   path = require('path'),
   pull = require('lodash').pull,
-  last = require('lodash').last,
   webpack = require('webpack'),
   ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var pkg = readJSONSync('package.json');
 var dependencies = Object.keys(pkg.dependencies);
-var SOUNDFILES = glob.sync('test/public/sounds/*.@(mp3|wav)')
-.map(function(filepath) {
-  return last(filepath.split(path.sep));
-});
 pull(dependencies, 'core-js', 'lodash');
 
 /* eslint-enable one-var */
@@ -80,9 +74,5 @@ module.exports = {
       test: path.resolve('test'),
       fetch: 'whatwg-fetch'
     }
-  },
-  configVals: {
-    ASSET_PATH: path.join('test', 'public'),
-    SOUNDFILES: SOUNDFILES
   }
 };

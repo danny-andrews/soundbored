@@ -3,7 +3,8 @@
 var i = require('icepick'),
   path = require('path'),
   webpack = require('webpack'),
-  webpackConfigBase = require('./webpack.config.base.js');
+  webpackConfigBase = require('./webpack.config.base.js'),
+  ENV = require('./ENV');
 
 webpackConfigBase = i.freeze(webpackConfigBase);
 
@@ -21,9 +22,7 @@ module.exports = i.thaw(i.merge(webpackConfigBase, {
   output: {path: path.resolve('dist')},
   plugins: webpackConfigBase.plugins.concat(
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(
-        i.assign(webpackConfigBase.configVals, {NODE_ENV: 'development'})
-      )
+      'process.env': i.assign(ENV, {NODE_ENV: '"development"'})
     })
   ),
   devtool: 'source-map'

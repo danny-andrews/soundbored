@@ -3,7 +3,8 @@
 var i = require('icepick'),
   path = require('path'),
   webpack = require('webpack'),
-  webpackConfigBase = require('./webpack.config.base');
+  webpackConfigBase = require('./webpack.config.base'),
+  ENV = require('./ENV');
 
 var DIST_PATH = 'dist';
 
@@ -22,12 +23,10 @@ module.exports = i.thaw(i.merge(webpackConfigBase, {
   output: {path: path.resolve(DIST_PATH)},
   plugins: webpackConfigBase.plugins.concat(
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(
-        i.assign(webpackConfigBase.configVals, {
-          NODE_ENV: 'production',
-          ASSET_PATH: ''
-        })
-      )
+      'process.env': i.assign(ENV, {
+        NODE_ENV: '"production"',
+        ASSET_PATH: '""'
+      })
     })
   ),
   devtool: 'none'

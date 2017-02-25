@@ -5,7 +5,8 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin'),
   i = require('icepick'),
   path = require('path'),
   webpack = require('webpack'),
-  webpackConfigBase = require('./webpack.config.base.js');
+  webpackConfigBase = require('./webpack.config.base.js'),
+  ENV = require('./ENV');
 
 webpackConfigBase = i.freeze(webpackConfigBase);
 
@@ -19,14 +20,12 @@ module.exports = i.thaw(i.merge(webpackConfigBase, {
   plugins: webpackConfigBase.plugins.concat(
     new ExtractTextPlugin('vendor', 'vendor.css'),
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(
-        i.assign(webpackConfigBase.configVals, {
-          NODE_ENV: 'test',
-          ASSET_PATH: 'public',
-          PROJECT_ROOT: path.resolve(),
-          LOCAL_PATH_SEP: path.sep
-        })
-      )
+      'process.env': i.assign(ENV, {
+        NODE_ENV: '"test"',
+        ASSET_PATH: '"public"',
+        PROJECT_ROOT: JSON.stringify(path.resolve()),
+        LOCAL_PATH_SEP: JSON.stringify(path.sep)
+      })
     })
   ),
   devtool: 'source-map'
