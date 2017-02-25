@@ -70,6 +70,6 @@
     "text-encoding": "^0.6.4",
     "url-loader": "^0.5.8",
     "webpack": "^2.0.0",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^2.4.1"
   }
 }
