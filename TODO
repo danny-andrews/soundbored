@@ -1,6 +1,7 @@
 ~jscs + jshint -> eslint~
 ~Grunt -> node scripts~
-webpack 1.x -> webpack 2.x
+~webpack 1.x -> webpack 2.x~
+Update dependencies
 materialize -> something else
 mocha -> ava
 Move backend to firebase
