@@ -2,7 +2,7 @@ import {chain, difference} from 'lodash';
 import {fk, Model, oneToOne} from 'redux-orm';
 import {ASSIGN_SHORTCUT_KEYS} from 'app/constants/action-types';
 import {handleActions} from 'redux-actions';
-import {SHORTCUT_ACTIONS} from 'app/constants';
+import {SHORTCUT_ACTIONS, DEFAULT_ENTITY_STATE} from 'app/constants';
 
 // TODO: Move this logic to the backend.
 function assignShortcutKeysHandler(session) {
@@ -39,10 +39,10 @@ function assignShortcutKeysHandler(session) {
 }
 
 export class Shortcut extends Model {
-  static reducer(state, action, klass, session) {
+  static reducer(state = DEFAULT_ENTITY_STATE, action, klass, session) {
     handleActions({
       [ASSIGN_SHORTCUT_KEYS]: () => assignShortcutKeysHandler(session)
-    })(state, action);
+    }, state)(state, action);
 
     return klass.getNextState();
   }

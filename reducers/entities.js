@@ -91,7 +91,7 @@ export default function(state = INITIAL_STATE, action) {
     [ATS.GET_BOARD_SOUNDS_REQ]: getBoardSoundsReqHandler,
     [ATS.GET_KEYS_REQ]: getKeysReqHandler,
     [ATS.GET_SHORTCUT_COMMANDS_REQ]: getShortcutCommandsReqHandler
-  })(newState, action);
+  }, state)(newState, action);
 
   return schema.reducer()(newState, action);
 }
